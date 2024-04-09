@@ -26,7 +26,8 @@ env:
         - examples/HTTPClient
         - examples/HTTPSClient
         - examples/TimeAndLocation
-        - examples/SMSReceive
+        - examples/ReceiveSMS
+        - examples/SendSMS
   SKETCHES_REPORTS_PATH: sketches-reports
   SKETCHES_REPORTS_ARTIFACT_NAME: sketches-reports
 
@@ -65,9 +66,10 @@ jobs:
           libraries: |
             # Install the library from the local path.
             - source-path: ./
-            - name: Arduino_USBHostMbed5
-            - name: Arduino_POSIXStorage
-            - name: ArduinoRS485
+            - name: ArduinoBearSSL
+            - name: StreamDebugger
+            - name: TinyGSM
+            - name: ArduinoHttpClient
             # Additional library dependencies can be listed here.
             # See: https://github.com/arduino/compile-sketches#libraries
           sketch-paths: |
