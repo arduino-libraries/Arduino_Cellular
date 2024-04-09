@@ -20,10 +20,14 @@
 #include <ModemInterface.h>
 #include <TimeUtils.h>
 
+/**
+ * @enum ModemModel
+ * @brief Represents the model of the modem.
+*/
 enum ModemModel {
-    EC200,
-    EG95,
-    Unsupported
+    EC200, /**< Quectel EC200 modem. */
+    EG95,  /**< Quectel EG95 modem. */
+    Unsupported /**< Unsupported modem model. */
 };
 
 /**
@@ -124,6 +128,7 @@ class ArduinoCellular {
         /**
          * @brief Gets the cellular location. (Blocking call) 
          * @param timeout The timeout (In milliseconds) to wait for the cellular location. 
+         * @return The cellular location. If the location is not retrieved, the latitude and longitude will be 0.0.
          */
         Location getCellularLocation(unsigned long timeout = 10000);
 
@@ -141,9 +146,8 @@ class ArduinoCellular {
 
         /**
          * @brief Sends an SMS message to the specified number.
-         * @param number The phone number to send the SMS to. (TODO: find out number format)
+         * @param number The phone number to send the SMS to.
          * @param message The message to send.
-         * @return True if the SMS is sent successfully, false otherwise.
          */
         void sendSMS(String number, String message);
 
@@ -162,6 +166,7 @@ class ArduinoCellular {
         /**
          * @brief Sends an AT command to the modem and waits for a response, then returns the response.
          * @param command The AT command to send.
+         * @param timeout The timeout (In milliseconds) to wait for the response.
          * @return The response from the modem.
          */
         String sendATCommand(char * command, unsigned long timeout = 1000);
@@ -187,9 +192,26 @@ class ArduinoCellular {
          */
         HttpClient getHTTPClient(const char * server, const int port);
 
+        /**
+         * @brief Gets the HTTPS client for the specified server and port.
+         * @param server The server address.
+         * @param port The server port.
+         * @return The HTTPS client.
+         */
         HttpClient getHTTPSClient(const char * server, const int port);
+        
+        /**
+         * @brief Gets the local IP address.
+         * @return The local IP address.
+         */
+        IPAddress getIPAddress();
 
-        void getConnectionStatus();
+        /**
+         * @brief Gets the signal quality.
+         * @return The signal quality.
+         */
+        int getSignalQuality();
+
     private:
         bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
         
@@ -217,7 +239,6 @@ class ArduinoCellular {
          * @param latitude Pointer to store the latitude. (0.0 if not retrieved)
          * @param longitude Pointer to store the longitude. (0.0 if not retrieved)
          * @param timeout The timeout (In milliseconds) to wait for the GPS location.
-         * @return True if the GPS location is retrieved, false otherwise.
          */
         void getGPSLocation(float* latitude, float* longitude, unsigned long timeout = 60000);
 
@@ -226,7 +247,7 @@ class ArduinoCellular {
 
         ModemModel model; /**< The modem model. */
 
-        static unsigned long getTime();
+        static unsigned long getTime(); /** Callback for getting the current time as an unix timestamp. */
 };
 
 

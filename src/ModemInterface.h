@@ -57,6 +57,9 @@ public:
   int power_pin; /**< The pin number for controlling the power of the modem. */
 };
 
-extern ModemInterface modem;
+/**
+ * @brief The global modem object.
+ */
+extern ModemInterface modem; 
 
 #endif

@@ -110,11 +110,12 @@ void ArduinoCellular::sendSMS(String number, String message){
   }
 
 
-void ArduinoCellular::getConnectionStatus(){
+IPAddress ArduinoCellular::getLocalIP(){
+    return modem.localIP();
+}
 
-   IPAddress local = modem.localIP();
-   Serial.print("Local IP:"); Serial.println(local.toString());
-   Serial.println("Signal quality:"); Serial.println(modem.getSignalQuality());
+int ArduinoCellular::getSignalQuality(){
+    return modem.getSignalQuality();
 }
 
 TinyGsmClient ArduinoCellular::getNetworkClient(){

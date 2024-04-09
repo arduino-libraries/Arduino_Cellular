@@ -56,6 +56,13 @@ class Time {
 
         /**
          * Initialises the time components with the given values.
+         * @param year The year component of the time.
+         * @param month The month component of the time.
+         * @param day The day component of the time.
+         * @param hour The hour component of the time.
+         * @param minute The minute component of the time.
+         * @param second The second component of the time.
+         * @param offset The timezone offset in hours (default is 0).
          */
         void fromComponents(int year, int month, int day, int hour, int minute, int second, int offset = 0) {
             this->year = year;
@@ -100,7 +107,8 @@ class Time {
         }
 
         /**
-         * Returns the year component of the time.
+         * Returns the year component of the time.\
+         * @param iso8601 The ISO8601 formatted string to parse. 
          * @return The year component of the time.
          */
         void parseISO8601(String iso8601) {
