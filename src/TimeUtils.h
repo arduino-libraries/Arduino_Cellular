@@ -109,7 +109,6 @@ class Time {
         /**
          * Returns the year component of the time.\
          * @param iso8601 The ISO8601 formatted string to parse. 
-         * @return The year component of the time.
          */
         void parseISO8601(String iso8601) {
             // Simplified parsing, assuming format "YYYY-MM-DDTHH:MM:SS+00:00"

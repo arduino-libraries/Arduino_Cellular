@@ -110,7 +110,7 @@ void ArduinoCellular::sendSMS(String number, String message){
   }
 
 
-IPAddress ArduinoCellular::getLocalIP(){
+IPAddress ArduinoCellular::getIPAddress(){
     return modem.localIP();
 }
 

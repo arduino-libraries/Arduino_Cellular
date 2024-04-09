@@ -171,12 +171,6 @@ class ArduinoCellular {
          */
         String sendATCommand(char * command, unsigned long timeout = 1000);
 
-        /*
-        * @brief Sends an USSD command to the modem and waits for a response, then returns the response.
-        * @param command The USSD command to send. (e.g. *100#)
-        * @return The response from the modem.
-        */
-        String sendUSSDCommand(char * command);
 
         /**
          * @brief Gets the Network client. (OSI Layer 3)
