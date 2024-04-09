@@ -18,7 +18,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 --------------------------------|---------------------------------------------
 | [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Default constructor. |
 | [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. |
-| [`connect`](#class_arduino_cellular_1a4a879d227df7b0346166218ebd3c2e9b) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
+| [`connect`](#class_arduino_cellular_1a041c9d5c546b82858b01859383d11fb7) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
 | [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS module. |
@@ -36,6 +36,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`getHTTPSClient`](#class_arduino_cellular_1aeb2d1bff0405e92197c0de750cef87e0) | Gets the HTTPS client for the specified server and port. |
 | [`getIPAddress`](#class_arduino_cellular_1aabf2ad2144827d34c3ba298b5f423344) | Gets the local IP address. |
 | [`getSignalQuality`](#class_arduino_cellular_1aefdae9cb2b8c9f05130b09c18c3f245e) | Gets the signal quality. |
+| [`setDebugStream`](#class_arduino_cellular_1aae2cacf5a5778293f0bd3312d2289327) | Sets the debug stream for [ArduinoCellular](#class_arduino_cellular). |
 
 ## Members
 
@@ -59,7 +60,7 @@ Initializes the modem.
 
 <hr />
 
-### `connect` <a id="class_arduino_cellular_1a4a879d227df7b0346166218ebd3c2e9b" class="anchor"></a>
+### `connect` <a id="class_arduino_cellular_1a041c9d5c546b82858b01859383d11fb7" class="anchor"></a>
 
 ```cpp
 bool connect(String apn, String gprsUser, String gprsPass, String pin)
@@ -308,6 +309,20 @@ Gets the signal quality.
 
 #### Returns
 The signal quality.
+<hr />
+
+### `setDebugStream` <a id="class_arduino_cellular_1aae2cacf5a5778293f0bd3312d2289327" class="anchor"></a>
+
+```cpp
+void setDebugStream(Stream & stream)
+```
+
+Sets the debug stream for [ArduinoCellular](#class_arduino_cellular).
+
+This function allows you to set the debug stream for [ArduinoCellular](#class_arduino_cellular). The debug stream is used to output debug messages and information.
+
+#### Parameters
+* `stream` A pointer to the Stream object that will be used as the debug stream.
 <hr />
 
 # class `ModemInterface` <a id="class_modem_interface" class="anchor"></a>
