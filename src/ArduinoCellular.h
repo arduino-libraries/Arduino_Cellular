@@ -1,3 +1,11 @@
+/**
+ * @file ArduinoCellular.h
+ * @brief Header file for the ArduinoCellular library.
+ * 
+ * This library provides methods to interact with the Arduino Pro Modem, such as connecting to the network,
+ * sending SMS messages, getting GPS location, and more.
+ */
+
 #ifndef ARDUINO_CELLULAR_MODEM_H
 #define ARDUINO_CELLULAR_MODEM_H
 
@@ -18,34 +26,50 @@ enum ModemModel {
     Unsupported
 };
 
+/**
+ * Represents an SMS message.
+ */
 class SMS {
     public:
-        String number;
-        String message;
-        Time timestamp;
+        String number; /**< The phone number associated with the SMS. */
+        String message; /**< The content of the SMS message. */
+        Time timestamp; /**< The timestamp when the SMS was received. */
 
+        /**
+         * Default constructor for SMS.
+         * Initializes the number, message, and timestamp to empty values.
+         */
         SMS() {
             this->number = "";
             this->message = "";
             this->timestamp = Time();
         }
         
+        /**
+         * Constructor for SMS.
+         * @param number The phone number associated with the SMS.
+         * @param message The content of the SMS message.
+         * @param timestamp The timestamp when the SMS was received.
+         */
         SMS(String number, String message, Time timestamp) {
             this->number = number;
             this->message = message;
             this->timestamp = timestamp;
         }
 };
-// TODO: move time implementation to Time class
 
+
+/**
+ * @struct Location
+ * @brief Represents a geographic location with latitude and longitude coordinates.
+ */
 struct Location {
-    float latitude;
-    float longitude;
+    float latitude; /**< The latitude coordinate of the location. */
+    float longitude; /**< The longitude coordinate of the location. */
 };
 
 /**
- * @class ArduinoPro_Modem
- * @brief Represents an Arduino Pro Modem.
+ * @class ArduinoCellular
  * 
  * This class provides methods to interact with the Arduino Pro Modem, such as connecting to the network,
  * sending SMS messages, getting GPS location, and more.

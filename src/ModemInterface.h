@@ -1,3 +1,8 @@
+/**
+ * @file ModemInterface.h
+ * @brief Header file for the ModemInterface class.
+ */
+
 #ifndef ARDUINO_4G_MODULE_H
 #define ARDUINO_4G_MODULE_H
 
@@ -12,11 +17,26 @@
 #include <TinyGsmClient.h>
 #include <ArduinoHttpClient.h>
 
+/**
+ * @class ModemInterface
+ * @brief Represents the interface to the 4G modem module.
+ */
 class ModemInterface : public TinyGsmBG96 {
 public:
+  /**
+   * @brief Constructor for the ModemInterface class.
+   * @param stream The stream object for communication with the modem.
+   * @param power_pin The pin number for controlling the power of the modem.
+   */
   explicit ModemInterface(Stream& stream, int power_pin) : TinyGsmBG96(stream),stream(&stream),power_pin(power_pin) {
     
   };
+
+  /**
+   * @brief Initializes the modem interface.
+   * @param pin The PIN code for the SIM card (optional).
+   * @return True if initialization is successful, false otherwise.
+   */
   bool init(const char* pin = NULL) {
     pinMode(power_pin, OUTPUT);
     digitalWrite(power_pin, HIGH);
@@ -31,13 +51,12 @@ public:
     #endif
     return TinyGsmBG96::init();
   };
+
 public:
-  Stream* stream;
-  int power_pin;
+  Stream* stream; /**< The stream object for communication with the modem. */
+  int power_pin; /**< The pin number for controlling the power of the modem. */
 };
 
 extern ModemInterface modem;
-
-
 
 #endif
