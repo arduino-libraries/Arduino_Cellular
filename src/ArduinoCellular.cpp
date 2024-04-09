@@ -45,7 +45,7 @@ void ArduinoCellular::begin() {
 
 bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, String pin){
     SimStatus simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_LOCKED) {
+    if(simStatus == SimStatus::SIM_LOCKED && pin.length() > 0){
        unlockSIM(pin.c_str());
     }
 
@@ -53,8 +53,15 @@ bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, Stri
     if(simStatus == SimStatus::SIM_READY) {
         if(awaitNetworkRegistration()){
             if(connectToGPRS(apn.c_str(), gprsUser.c_str(), gprsPass.c_str())){
-                Serial.println("Setting DNS...");
-                Serial.println(this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\""));
+                if(this->debugStream != nullptr){
+                    this->debugStream->println("Setting DNS...");
+                }
+                
+                auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
+                
+                if(this->debugStream != nullptr){
+                    this->debugStream->println(response);
+                }                
                 return true;
             }
         } else {
@@ -83,7 +90,9 @@ Location ArduinoCellular::getGPSLocation(unsigned long timeout){
 
         return loc;
     } else {
-        Serial.println("Unsupported modem model");
+        if(this->debugStream != nullptr){
+            this->debugStream->println("Unsupported modem model");
+        }
         return Location();
     }
 }
@@ -108,7 +117,11 @@ void ArduinoCellular::sendSMS(String number, String message){
     modem.stream->print(message);  // Actually send the message
     modem.stream->write(static_cast<char>(0x1A));  // Terminate the message
     modem.stream->flush();
-    Serial.println(modem.waitResponse(10000L));
+    auto response = modem.waitResponse(10000L);
+    
+    if(this->debugStream != nullptr){
+        this->debugStream->println("Response: " + String(response));
+    }
   }
 
 
@@ -141,9 +154,13 @@ bool ArduinoCellular::isConnectedToOperator(){
 }
 
 bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass){
-    Serial.print(F("Connecting to 4G network..."));
+    if(this->debugStream != nullptr){
+        this->debugStream->println("Connecting to 4G network...");
+    }
     while(!modem.gprsConnect(apn, gprsUser, gprsPass)) {
-        Serial.print(".");
+        if(this->debugStream != nullptr){
+            this->debugStream->print(".");
+        }
         delay(2000);
     }
     return true;
@@ -155,7 +172,9 @@ bool ArduinoCellular::isConnectedToInternet(){
 
 SimStatus ArduinoCellular::getSimStatus(){
     int simStatus = modem.getSimStatus();
-    Serial.println("SIM Status: " + String(simStatus));
+    if(this->debugStream != nullptr){
+        this->debugStream->println("SIM Status: " + String(simStatus));
+    }
 
     if (modem.getSimStatus() == 0) {
         return SimStatus::SIM_ERROR;
@@ -171,21 +190,30 @@ SimStatus ArduinoCellular::getSimStatus(){
 }
 
 bool ArduinoCellular::unlockSIM(const char * pin){
-    Serial.println("Unlocking SIM...");
+    if(this->debugStream != nullptr){
+        this->debugStream->println("Unlocking SIM...");
+    }
     modem.simUnlock(pin); 
 }
 
 bool ArduinoCellular::awaitNetworkRegistration(){
-    Serial.print("Waiting for network registration...");
+    if(this->debugStream != nullptr){
+        this->debugStream->println("Waiting for network registration...");
+    }
     while (!modem.waitForNetwork()) {
-        Serial.println(".");
+        if(this->debugStream != nullptr){
+            this->debugStream->print(".");
+        }
         delay(2000);
     } 
     return true;
 }
 
 bool ArduinoCellular::enableGPS(bool assisted){
-    Serial.println("Enabling GPS...");
+    if(this->debugStream != nullptr){
+        this->debugStream->println("Enabling GPS...");
+    }
+
     if(assisted){
         sendATCommand("AT+QGPSCFG=\"agpsposmode\",33488767");
     } else {
@@ -304,4 +332,6 @@ std::vector<SMS> ArduinoCellular::getUnreadSMS(){
     }
 }
 
-
+void ArduinoCellular::setDebugStream(Stream &stream){
+    this->debugStream = &stream;
+}

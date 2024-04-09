@@ -123,7 +123,7 @@ These features enable precise tracking of device locations and ensure synchroniz
 
 GPS Location is ideal for applications requiring high-precision location data, such as asset tracking or outdoor navigation solutions. This functionality relies on the Global Version of the modem, which is equipped with GPS capabilities.
 
-To enable GPS Location you will need to call `enableGPS(bool assisted)`. Assisted GPS or A-GPS is an enchancement of GPS that uses the cellular network to get the location, it performs that much quicker than without assistence but depends on Cellular network coverage. 
+To enable GPS Location you will need to call `enableGPS(bool assisted)`. Assisted GPS or A-GPS is an enhancement of GPS that uses the cellular network to get the location, it performs that much quicker than without assistance but depends on Cellular network coverage. 
 
 ### Cellular Location
 **Method Overview:** `getCellularLocation(unsigned long timeout = 10000)` also provides location tracking but utilizes the cellular network. Similar to the GPS method, it's a blocking call with a specified timeout, returning latitude and longitude values through a Location structure. If the location is not obtained, the values default to 0.0.

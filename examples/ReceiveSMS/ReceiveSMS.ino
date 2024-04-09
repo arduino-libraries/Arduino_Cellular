@@ -7,7 +7,7 @@
 constexpr int NEW_SMS_INTERRUPT_PIN = A0;
 
 ArduinoCellular cellular = ArduinoCellular();
-volatile boolean newSMSavailable = false;
+volatile boolean smsReceived = false;
 
 void printMessages(std::vector<SMS> msg){
      for(int i = 0; i < msg.size(); i++){
@@ -17,21 +17,22 @@ void printMessages(std::vector<SMS> msg){
         Serial.print("\t * Timestamp: "); Serial.println(msg[i].timestamp.getISO8601());
     }
 }
-void newSMSCallback(){
+void onSMSReceived(){
     Serial.println("New SMS received!");
-    newSMSavailable = true;
+    smsReceived = true;
 }
 
 void setup(){
     Serial.begin(115200);
     while (!Serial);
+    cellular.setDebugStream(Serial);
 
     cellular.begin();
     Serial.println("Connecting...");
     cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
     
     // Register interrupt based callback for new SMS
-    attachInterrupt(digitalPinToInterrupt(NEW_SMS_INTERRUPT_PIN), newSMSCallback, RISING);
+    attachInterrupt(digitalPinToInterrupt(NEW_SMS_INTERRUPT_PIN), onSMSReceived, RISING);
 
     Serial.println("Read SMS:");
     std::vector<SMS> readSMS = cellular.getReadSMS();
@@ -43,8 +44,8 @@ void setup(){
 }
 
 void loop(){
-    if(newSMSavailable){
-        newSMSavailable = false;
+    if(smsReceived){
+        smsReceived = false;
         std::vector<SMS> unreadSMS = cellular.getUnreadSMS();
         if (unreadSMS.size() > 0){
             printMessages(unreadSMS);
