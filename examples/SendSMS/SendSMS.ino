@@ -33,7 +33,7 @@ void setup(){
     cellular.connect(apn, gprsUser, gprsPass, pinCode);
 
     Serial.println("Sending SMS...");
-    cellular.sendSMS("+41791234567", "bleep bleep");
+    cellular.sendSMS("<INSERT_NUMBER_HERE>", "bleep bleep");
     Serial.println("Done.");
 }
 

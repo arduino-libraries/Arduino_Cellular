@@ -43,16 +43,16 @@ void ArduinoCellular::begin() {
 
 }
 
-bool ArduinoCellular::connect(const char * apn, const char * gprsUser, const char * gprsPass, const char * pin){
+bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, String pin){
     SimStatus simStatus = getSimStatus();
     if(simStatus == SimStatus::SIM_LOCKED) {
-       unlockSIM(pin);
+       unlockSIM(pin.c_str());
     }
 
     simStatus = getSimStatus();
     if(simStatus == SimStatus::SIM_READY) {
         if(awaitNetworkRegistration()){
-            if(connectToGPRS(apn, gprsUser, gprsPass)){
+            if(connectToGPRS(apn.c_str(), gprsUser.c_str(), gprsPass.c_str())){
                 Serial.println("Setting DNS...");
                 Serial.println(this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\""));
                 return true;
@@ -305,25 +305,3 @@ std::vector<SMS> ArduinoCellular::getUnreadSMS(){
 }
 
 
-
-bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, String pin){
-    SimStatus simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_LOCKED) {
-       unlockSIM(pin.c_str());
-    }
-
-    simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_READY) {
-        if(awaitNetworkRegistration()){
-            if(connectToGPRS(apn.c_str(), gprsUser.c_str(), gprsPass.c_str())){
-                Serial.println("Setting DNS...");
-                Serial.println(this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\""));
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
