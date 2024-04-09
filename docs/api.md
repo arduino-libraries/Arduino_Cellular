@@ -18,7 +18,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 --------------------------------|---------------------------------------------
 | [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Default constructor. |
 | [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. |
-| [`connect`](#class_arduino_cellular_1a7551e64b14a8c04b38de598e12c2a819) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
+| [`connect`](#class_arduino_cellular_1a4a879d227df7b0346166218ebd3c2e9b) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
 | [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS module. |
@@ -31,6 +31,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`getUnreadSMS`](#class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5) | Gets the list of unread [SMS](#class_s_m_s) messages. |
 | [`sendATCommand`](#class_arduino_cellular_1a1d20e97f47d05d5420a98f79f213f978) | Sends an AT command to the modem and waits for a response, then returns the response. |
 | [`getNetworkClient`](#class_arduino_cellular_1acff92474af3bd819b62f132cf12f45ba) | Gets the Network client. (OSI Layer 3) |
+| [`getSecureNetworkClient`](#class_arduino_cellular_1a8b7486d1a682787588c015af8d65a38e) | Gets the Transport Layer Security (TLS) client. (OSI Layer 4) |
 | [`getHTTPClient`](#class_arduino_cellular_1aa1b4c3bbd14984d2a7ed1db7fa1ac930) | Gets the HTTP client for the specified server and port. |
 | [`getHTTPSClient`](#class_arduino_cellular_1aeb2d1bff0405e92197c0de750cef87e0) | Gets the HTTPS client for the specified server and port. |
 | [`getIPAddress`](#class_arduino_cellular_1aabf2ad2144827d34c3ba298b5f423344) | Gets the local IP address. |
@@ -58,10 +59,10 @@ Initializes the modem.
 
 <hr />
 
-### `connect` <a id="class_arduino_cellular_1a7551e64b14a8c04b38de598e12c2a819" class="anchor"></a>
+### `connect` <a id="class_arduino_cellular_1a4a879d227df7b0346166218ebd3c2e9b" class="anchor"></a>
 
 ```cpp
-bool connect(const char * apn, const char * gprsUser, const char * gprsPass, const char * pin)
+bool connect(String apn, String gprsUser, String gprsPass, String pin)
 ```
 
 Connects to the network using the specified APN, GPRS username, and GPRS password.
@@ -234,6 +235,18 @@ TinyGsmClient getNetworkClient()
 ```
 
 Gets the Network client. (OSI Layer 3)
+
+#### Returns
+The GSM client.
+<hr />
+
+### `getSecureNetworkClient` <a id="class_arduino_cellular_1a8b7486d1a682787588c015af8d65a38e" class="anchor"></a>
+
+```cpp
+BearSSLClient getSecureNetworkClient()
+```
+
+Gets the Transport Layer Security (TLS) client. (OSI Layer 4)
 
 #### Returns
 The GSM client.
