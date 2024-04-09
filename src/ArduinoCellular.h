@@ -98,7 +98,7 @@ class ArduinoCellular {
          * @param pin The SIM card PIN.
          * @return True if the connection is successful, false otherwise.
          */
-        bool connect(const char * apn, const char * gprsUser, const char * gprsPass, const char * pin);
+        bool connect(String apn, String gprsUser, String gprsPass, String pin);
 
         /**
          * @brief Checks if the modem is registered on the network.

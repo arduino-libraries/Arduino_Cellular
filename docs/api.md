@@ -18,7 +18,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 --------------------------------|---------------------------------------------
 | [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Default constructor. |
 | [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. |
-| [`connect`](#class_arduino_cellular_1afbd8079987c3a2eb880e57357cbf0d6b) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
+| [`connect`](#class_arduino_cellular_1a7551e64b14a8c04b38de598e12c2a819) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
 | [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS module. |
@@ -58,10 +58,10 @@ Initializes the modem.
 
 <hr />
 
-### `connect` <a id="class_arduino_cellular_1afbd8079987c3a2eb880e57357cbf0d6b" class="anchor"></a>
+### `connect` <a id="class_arduino_cellular_1a7551e64b14a8c04b38de598e12c2a819" class="anchor"></a>
 
 ```cpp
-bool connect(const char * apn, const char * gprsUser, const char * gprsPass)
+bool connect(const char * apn, const char * gprsUser, const char * gprsPass, const char * pin)
 ```
 
 Connects to the network using the specified APN, GPRS username, and GPRS password.
@@ -72,6 +72,8 @@ Connects to the network using the specified APN, GPRS username, and GPRS passwor
 * `gprsUser` The GPRS username. 
 
 * `gprsPass` The GPRS password. 
+
+* `pin` The SIM card PIN. 
 
 #### Returns
 True if the connection is successful, false otherwise.

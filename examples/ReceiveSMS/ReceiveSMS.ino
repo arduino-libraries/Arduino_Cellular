@@ -1,15 +1,13 @@
 #include "ArduinoCellular.h"
 #include "arduino_secrets.h"
 
+// #define TINY_GSM_DEBUG Serial
+// #define ARDUINO_CELLULAR_DEBUG
 
-
-#define TINY_GSM_DEBUG Serial
-#define ARDUINO_CELLULAR_DEBUG
+constexpr int NEW_SMS_INTERRUPT_PIN = A0;
 
 ArduinoCellular cellular = ArduinoCellular();
-
-boolean newSMS = false;
-
+volatile boolean newSMSavailable = false;
 
 void printMessages(std::vector<SMS> msg){
      for(int i = 0; i < msg.size(); i++){
@@ -20,18 +18,20 @@ void printMessages(std::vector<SMS> msg){
     }
 }
 void newSMSCallback(){
-    Serial.println("new sms received");
-    newSMS = true;
+    Serial.println("New SMS received!");
+    newSMSavailable = true;
 }
 
 void setup(){
     Serial.begin(115200);
     while (!Serial);
+
     cellular.begin();
+    Serial.println("Connecting...");
     cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
     
-    
-    attachInterrupt(digitalPinToInterrupt(A0), newSMSCallback, RISING);
+    // Register interrupt based callback for new SMS
+    attachInterrupt(digitalPinToInterrupt(NEW_SMS_INTERRUPT_PIN), newSMSCallback, RISING);
 
     Serial.println("Read SMS:");
     std::vector<SMS> readSMS = cellular.getReadSMS();
@@ -40,13 +40,11 @@ void setup(){
     Serial.println("Unread SMS:");
     std::vector<SMS> unreadSMS = cellular.getUnreadSMS();
     printMessages(unreadSMS);
-
-    cellular.sendSMS("+40788494946", "bleep bleep");
 }
 
 void loop(){
-    if(newSMS){
-        newSMS = false;
+    if(newSMSavailable){
+        newSMSavailable = false;
         std::vector<SMS> unreadSMS = cellular.getUnreadSMS();
         if (unreadSMS.size() > 0){
             printMessages(unreadSMS);
