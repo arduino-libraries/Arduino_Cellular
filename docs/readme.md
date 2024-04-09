@@ -64,7 +64,7 @@ This layered approach is not only modular but also highly flexible, allowing dev
 ### Network Client (OSI Layer 3)
 Represents a basic client for network communication, suitable for protocols like TCP/IP.
 ```c
-TinyGSMClient client = cellulat.getNetworkClient();
+TinyGSMClient client = cellular.getNetworkClient();
 ```
 
 ### Secure Network Client 
@@ -86,6 +86,65 @@ HttpClient http = cellular.getHTTPSClient(server, port);
 
 
 ## SMS 
+The SMS functionality allows devices to exchange information with users or other systems through simple text messages, enabling a wide range of applications from remote monitoring to control systems or a fallback communication method when the others are not available. 
 
+### Reading SMS Messages
+**getReadSMS():** This method returns a vector containing SMS messages that have already been read. It's particularly useful for applications that need to process or display messages that have been acknowledged.
+
+**getUnreadSMS(): **This method fetches a vector of unread SMS messages, allowing the application to process or notify users about new messages.
+
+Each SMS message is represented as an instance of the `SMS` class, which contains the sender's number, the message text, and a timestamp marking when the message was received.
+
+
+### The SMS Class
+The SMS class serves as a container for information related to a single SMS message. It includes the following attributes:
+
+* `number`: The phone number from which the SMS was sent.
+* `message`: The body of the SMS message.
+* `timestamp`: A timestamp indicating when the message was received by the module.
+
+The class provides constructors for initializing an SMS object either with default values or with specific details about the message.
+
+### Sending SMS Messages
+Sending SMS messages is a straightforward process with the Arduino cellular library. 
+
+The method sendSMS() is designed for this purpose, taking two parameters:
+
+* `number`: The recipient's phone number.
+* `message`: The text of the message to be sent.
+
+This functionality allows Arduino devices to communicate outwardly to users or other systems, sending alerts, data, or control commands via SMS.
 
 ## Time and Location
+These features enable precise tracking of device locations and ensure synchronized operations across different systems. This guide focuses on utilizing GPS and cellular network capabilities for location tracking and time synchronization. It's important to note that GPS functionality is exclusively available in the Global Version of the modem, highlighting the need for appropriate hardware selection based on the project requirements.
+
+### GPS Location
+**Method Overview:** `getGPSLocation(unsigned long timeout = 60000)` is a blocking call that attempts to acquire the current GPS location within the specified timeout period. The method returns a Location structure, containing latitude and longitude values. If the location cannot be retrieved within the timeout, both values default to 0.0.
+
+GPS Location is ideal for applications requiring high-precision location data, such as asset tracking or outdoor navigation solutions. This functionality relies on the Global Version of the modem, which is equipped with GPS capabilities.
+
+To enable GPS Location you will need to call `enableGPS(bool assisted)`. Assisted GPS or A-GPS is an enchancement of GPS that uses the cellular network to get the location, it performs that much quicker than without assistence but depends on Cellular network coverage. 
+
+### Cellular Location
+**Method Overview:** `getCellularLocation(unsigned long timeout = 10000)` also provides location tracking but utilizes the cellular network. Similar to the GPS method, it's a blocking call with a specified timeout, returning latitude and longitude values through a Location structure. If the location is not obtained, the values default to 0.0.
+
+Cellular location is suitable for scenarios where GPS signals are weak or unavailable, offering a broader coverage area at the expense of location accuracy. This method leverages the cellular network's infrastructure to approximate the device's location.
+
+### Time Synchronization
+Time synchronization is crucial for maintaining accurate timing across IoT devices, especially for data logging, scheduled tasks, and time-stamped communications.
+
+#### Cellular Time
+**Method Overview**: `getCellularTime()` fetches the current time from the cellular network, providing a reliable time source even without GPS signals. The time is returned as a Time object.
+
+Cellular time is perfect for devices that require accurate time but operate in areas with limited or no GPS coverage. Since it relies on the cellular network, it ensures time synchronization across devices distributed geographically.
+
+#### GPS Time
+**Method Overview**: getGPSTime() obtains the current time from the GPS module, offering highly accurate and globally synchronized time data. The method returns a Time object.
+
+GPS Time for applications demanding precise timekeeping, benefiting from the global synchronization capabilities of GPS satellites. This feature is exclusive to devices equipped with the Global Version of the modem that includes GPS functionality.
+
+
+### The Time Class
+The Time class represents a specific point in time, including year, month, day, hour, minute, second, and timezone offset. 
+
+It supports parsing from ISO8601 and UNIX timestamp formats, offering flexibility in handling time data. This class is crucial for applications that manage events, log data with timestamps, or perform scheduled operations.

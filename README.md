@@ -1,7 +1,5 @@
 # Arduino Cellular 
 
-[![Check Arduino](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/spell-check.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/spell-check.yml) [![Sync Labels](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/sync-labels.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/sync-labels.yml)
-
 
 This library provides a toolkit for interacting with the official Arduino 4G Modules. It allows you to connect to the internet, send and receive SMS messages, and get location from the cellular network or GPS. 
 
