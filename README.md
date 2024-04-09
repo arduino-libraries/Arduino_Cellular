@@ -8,7 +8,7 @@ This library provides a toolkit for interacting with the official Arduino 4G Mod
 ## Examples
 * [examples/HTTPClient]() - Example of using this library together with [HttpClient]() to connect to a web server
 * [examples/HTTPClient]() - Example of using this library together with [HttpClient]() that uses [BearSSL]() under the hood to create a secure connection to a web server
-* [examples/SMSReceive]() - Example for the SMS sending and receiving functionality 
+* [examples/ReceiveSMS]() - Example for the SMS sending and receiving functionality 
 * [examples/TimeAndLocation]() - Use GPS, or Cellular to acquire the location and time of the device. 
 * [examples/ModemTerminal]() - A handy example for debugging and Testing AT commands 
 

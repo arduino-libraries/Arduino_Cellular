@@ -99,7 +99,7 @@ class ArduinoCellular {
          * @param pin The SIM card PIN.
          * @return True if the connection is successful, false otherwise.
          */
-        bool connect(String apn, String gprsUser, String gprsPass, String pin);
+        bool connect(String apn, String gprsUser, String gprsPass, String pin = "");
 
         /**
          * @brief Checks if the modem is registered on the network.
@@ -214,6 +214,16 @@ class ArduinoCellular {
          */
         int getSignalQuality();
 
+        /**
+         * @brief Sets the debug stream for ArduinoCellular.
+         * 
+         * This function allows you to set the debug stream for ArduinoCellular. 
+         * The debug stream is used to output debug messages and information.
+         * 
+         * @param stream A pointer to the Stream object that will be used as the debug stream.
+         */
+        void setDebugStream(Stream& stream);
+
     private:
         bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
         
@@ -248,6 +258,8 @@ class ArduinoCellular {
         TinyGsmClient client; /**< The GSM client. */
 
         ModemModel model; /**< The modem model. */
+
+        Stream* debugStream = nullptr; /**< The stream to be used for printing debugging messages. */
 
         static unsigned long getTime(); /** Callback for getting the current time as an unix timestamp. */
 };
