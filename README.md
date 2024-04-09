@@ -1,5 +1,7 @@
 # Arduino Cellular 
 
+[![Arduino Lint](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/spell-check.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/spell-check.yml) [![Sync Labels](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/sync-labels.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/sync-labels.yml)[Render Documentation](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/render-documentation.yml)
+
 
 This library provides a toolkit for interacting with the official Arduino 4G Modules. It allows you to connect to the internet, send and receive SMS messages, and get location from the cellular network or GPS. 
 
@@ -7,7 +9,7 @@ This library provides a toolkit for interacting with the official Arduino 4G Mod
 * [examples/HTTPClient]() - Example of using this library together with [HttpClient]() to connect to a web server
 * [examples/HTTPClient]() - Example of using this library together with [HttpClient]() that uses [BearSSL]() under the hood to create a secure connection to a web server
 * [examples/SMSReceive]() - Example for the SMS sending and receiving functionality 
-* [examples/TimeAndLocation]() - Use GPS, or Cellular to aquire the location and time of the device. 
+* [examples/TimeAndLocation]() - Use GPS, or Cellular to acquire the location and time of the device. 
 * [examples/ModemTerminal]() - A handy example for debugging and Testing AT commands 
 
 ## Features
