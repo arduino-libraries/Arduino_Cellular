@@ -1,3 +1,4 @@
+
 /**
  * @file ArduinoCellular.h
  * @brief Header file for the ArduinoCellular library.
@@ -178,6 +179,12 @@ class ArduinoCellular {
          * @return The GSM client.
          */
         TinyGsmClient getNetworkClient();
+
+        /**
+         * @brief Gets the Transport Layer Security (TLS) client. (OSI Layer 4)
+         * @return The GSM client.
+         */
+        BearSSLClient getSecureNetworkClient();
 
         /**
          * @brief Gets the HTTP client for the specified server and port.
