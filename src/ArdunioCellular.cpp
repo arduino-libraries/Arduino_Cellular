@@ -41,10 +41,10 @@ void ArduinoCellular::begin() {
 
 }
 
-bool ArduinoCellular::connect(const char * apn, const char * gprsUser, const char * gprsPass){
+bool ArduinoCellular::connect(const char * apn, const char * gprsUser, const char * gprsPass, const char * pin){
     SimStatus simStatus = getSimStatus();
     if(simStatus == SimStatus::SIM_LOCKED) {
-       unlockSIM("1234");
+       unlockSIM(pin);
     }
 
     simStatus = getSimStatus();

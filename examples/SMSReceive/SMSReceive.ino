@@ -1,8 +1,7 @@
 #include "ArduinoCellular.h"
+#include "arduino_secrets.h"
 
-const char apn[]      = "live.vodafone.com";
-const char gprsUser[] = "live";
-const char gprsPass[] = "";
+
 
 #define TINY_GSM_DEBUG Serial
 #define ARDUINO_CELLULAR_DEBUG
@@ -29,7 +28,7 @@ void setup(){
     Serial.begin(115200);
     while (!Serial);
     cellular.begin();
-    cellular.connect(apn, gprsUser, gprsPass);
+    cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
     
     
     attachInterrupt(digitalPinToInterrupt(A0), newSMSCallback, RISING);

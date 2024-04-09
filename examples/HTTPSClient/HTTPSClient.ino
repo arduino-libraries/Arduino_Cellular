@@ -4,9 +4,6 @@
 #include <ArduinoHttpClient.h>
 #include "arduino_secrets.h"
 
-const char apn[]      = "live.vodafone.com";
-const char gprsUser[] = "live";
-const char gprsPass[] = "";
 
 const char server[]   = "example.com";
 const char resource[] = "/";
@@ -20,7 +17,7 @@ void setup(){
     while (!Serial);
  
     cellular.begin();
-    cellular.connect(apn, gprsUser, gprsPass);
+    cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
 }
 
 void loop()

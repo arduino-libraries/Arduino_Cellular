@@ -1,7 +1,7 @@
 #define DUMP_AT_COMMANDS 
 
 #include "ArduinoCellular.h"
-
+#include "arduino_secrets.h"
 
 ArduinoCellular cellular = ArduinoCellular();
 
@@ -15,16 +15,12 @@ int minute = 0;
 int second = 0;
 
 
-const char apn[]      = "internet";
-const char gprsUser[] = "";
-const char gprsPass[] = "";
-
 void setup(){
     Serial.begin(115200);
     while (!Serial);
     cellular.begin();
-    //cellularModem.connect(apn, gprsUser, gprsPass);
-    cellular.enableGPS(false);
+    //cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
+    //cellular.enableGPS(false);
 }
 
 void loop(){

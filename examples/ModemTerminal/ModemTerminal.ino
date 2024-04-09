@@ -1,4 +1,5 @@
 #include "ArduinoCellular.h"
+#include "arduino_secrets.h"
 
 
 ArduinoCellular cellular = ArduinoCellular();
@@ -6,15 +7,12 @@ ArduinoCellular cellular = ArduinoCellular();
 float lat = 0.00;
 float lon = 0.00;
 
-const char apn[]      = "live.vodafone.com";
-const char gprsUser[] = "live";
-const char gprsPass[] = "";
 
 void setup(){
     Serial.begin(115200);
     while (!Serial);
     cellular.begin();
-    cellular.connect(apn, gprsUser, gprsPass);
+    cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
 }
 
 void loop() {
