@@ -67,9 +67,9 @@ bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, Stri
         } else {
             return false;
         }
-    } else {
-        return false;
     }
+    
+    return false;    
 }
 
 
@@ -193,7 +193,7 @@ bool ArduinoCellular::unlockSIM(const char * pin){
     if(this->debugStream != nullptr){
         this->debugStream->println("Unlocking SIM...");
     }
-    modem.simUnlock(pin); 
+    return modem.simUnlock(pin); 
 }
 
 bool ArduinoCellular::awaitNetworkRegistration(){
@@ -226,7 +226,7 @@ bool ArduinoCellular::enableGPS(bool assisted){
 
     //modem.waitResponse();
 
-    modem.enableGPS();
+    return modem.enableGPS();
     //delay(10000);
 }
 
@@ -264,7 +264,7 @@ Time parseTimestamp(const String &timestampStr) {
   return Time(year, month, day, hour, minute, second, offset);
 }
 // Parses a single SMS entry from the data
-SMS parseSMSEntry(const String& entry) {
+SMS parseSMSEntry(const String& entry, const String& message) {
   SMS sms;
   int firstQuoteIndex = entry.indexOf('"');
   int secondQuoteIndex = entry.indexOf('"', firstQuoteIndex + 1);
@@ -278,37 +278,56 @@ SMS parseSMSEntry(const String& entry) {
 
   // Parse the timestamp
   sms.timestamp = parseTimestamp(rawTimestamp);
-
-  // Extracting the message content
-  int messageStartIndex = entry.indexOf('\n') + 1; // Assuming message starts after the newline
-  if (messageStartIndex != -1) {
-      sms.message = entry.substring(messageStartIndex, entry.indexOf('\n'));
-  }
-
+  
+  sms.message = message;
   return sms;
+}
+
+// Function to split a string into lines based on a delimiter character
+// Filters out empty lines
+std::vector<String> splitStringByLines(const String& input, char delimiter = '\n') {
+    std::vector<String> lines;
+    int startIndex = 0;
+    while (startIndex < input.length()) {
+        int endIndex = input.indexOf(delimiter, startIndex);
+        if (endIndex == -1)
+            endIndex = input.length();
+        String line = input.substring(startIndex, endIndex);
+        if(line.length() > 0 && line != "\r" && line != "\n" && line != "\r\n"){
+            // Remove trailing \r if it exists
+            if (line.endsWith("\r")) {
+                line.remove(line.length() - 1);
+            }
+            lines.push_back(line);
+        }
+        startIndex = endIndex + 1;
+    }
+    return lines;
 }
 
 // Splits the entire message string into individual SMS entries and parses them
 std::vector<SMS> parseSMSData(const String& data) {
-  std::vector<SMS> smsList;
-  int start = 0;
-  int end = data.indexOf("\n+CMGL: ", start);
-  
-  while (end != -1) {
-    String entry = data.substring(start, end);
-    smsList.push_back(parseSMSEntry(entry));
-    start = end + 1;
-    end = data.indexOf("\n+CMGL: ", start);
-  }
-  // Adding the last SMS entry, if there's any remaining part
-  if (start < data.length()) {
-    smsList.push_back(parseSMSEntry(data.substring(start)));
-  }
+    std::vector<SMS> smsList = std::vector<SMS>();    
+    std::vector<String> lines = splitStringByLines(data);
+    
+    // Remove last line if it's "OK"
+    if (lines.size() > 0 && lines[lines.size() - 1] == "OK") {
+        lines.pop_back();
+    }
 
-  smsList.erase(smsList.begin());
+    for(int i = 0; i < lines.size(); i += 2){
+        if (lines[i].startsWith("+CMGL:")) {
+            String message = "";
+            if(i + 1 < lines.size()){
+                message = lines[i + 1];
+            }
+            SMS sms = parseSMSEntry(lines[i], message);
+            smsList.push_back(sms);
+        }
+    }
+
   return smsList;
 }
-
 
 std::vector<SMS> ArduinoCellular::getReadSMS(){
     String rawMessages = sendATCommand("+CMGL=\"REC READ\"");
