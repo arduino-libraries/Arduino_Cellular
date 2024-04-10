@@ -67,9 +67,9 @@ bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, Stri
         } else {
             return false;
         }
-    } else {
-        return false;
     }
+    
+    return false;    
 }
 
 
@@ -193,7 +193,7 @@ bool ArduinoCellular::unlockSIM(const char * pin){
     if(this->debugStream != nullptr){
         this->debugStream->println("Unlocking SIM...");
     }
-    modem.simUnlock(pin); 
+    return modem.simUnlock(pin); 
 }
 
 bool ArduinoCellular::awaitNetworkRegistration(){
@@ -226,7 +226,7 @@ bool ArduinoCellular::enableGPS(bool assisted){
 
     //modem.waitResponse();
 
-    modem.enableGPS();
+    return modem.enableGPS();
     //delay(10000);
 }
 
