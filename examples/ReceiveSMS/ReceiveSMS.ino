@@ -1,6 +1,4 @@
 #include "ArduinoCellular.h"
-#include "arduino_secrets.h"
-
 
 constexpr int NEW_SMS_INTERRUPT_PIN = A0;
 
