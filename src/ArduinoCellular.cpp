@@ -272,6 +272,10 @@ SMS parseSMSEntry(const String& entry, const String& message) {
   int fourthQuoteIndex = entry.indexOf('"', thirdQuoteIndex + 1);
   int commaIndexBeforeTimestamp = entry.lastIndexOf(',', entry.lastIndexOf(',') - 1);
 
+  String command = "+CMGL: ";
+  // Index is between "+CMGL: " and first "," symbol
+  sms.index = entry.substring(entry.indexOf(command) + command.length(), entry.indexOf(',')).toInt();
+
   // Extracting number and raw timestamp
   sms.number = entry.substring(thirdQuoteIndex + 1, fourthQuoteIndex);
   String rawTimestamp = entry.substring(commaIndexBeforeTimestamp + 2, entry.indexOf('+', commaIndexBeforeTimestamp) + 3);
