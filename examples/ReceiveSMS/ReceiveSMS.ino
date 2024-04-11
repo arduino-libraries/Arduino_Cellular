@@ -23,11 +23,12 @@ void onSMSReceived(){
 void setup(){
     Serial.begin(115200);
     while (!Serial);
-    cellular.setDebugStream(Serial);
+    // cellular.setDebugStream(Serial); // Uncomment this line to enable debug output
     cellular.begin();
     
     Serial.println("Connecting...");
     cellular.connect();
+    Serial.println("Connected!");
 
     // Register interrupt based callback for new SMS
     attachInterrupt(digitalPinToInterrupt(NEW_SMS_INTERRUPT_PIN), onSMSReceived, RISING);
