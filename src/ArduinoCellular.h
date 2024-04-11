@@ -36,8 +36,8 @@ enum ModemModel {
  */
 class SMS {
     public:
-        String number; /**< The phone number associated with the SMS. */
         int16_t index; /**< The index of the SMS message. */
+        String sender; /**< The phone number associated with the SMS. */
         String message; /**< The content of the SMS message. */
         Time timestamp; /**< The timestamp when the SMS was received. */
 
@@ -46,8 +46,8 @@ class SMS {
          * Initializes the number, message, and timestamp to empty values.
          */
         SMS() {
-            this->number = "";
             this->index = -1;
+            this->sender = "";
             this->message = "";
             this->timestamp = Time();
         }
@@ -55,11 +55,12 @@ class SMS {
         /**
          * Constructor for SMS.
          * @param index The index of the SMS message.
-         * @param number The phone number associated with the SMS.
+         * @param sender The phone number associated with the sender of the SMS.
          * @param message The content of the SMS message.
          * @param timestamp The timestamp when the SMS was received.
          */
-        SMS(int16_t index, String number, String message, Time timestamp) {
+        SMS(int16_t index, String sender, String message, Time timestamp) {
+            this->sender = sender;
             this->message = message;
             this->timestamp = timestamp;
         }

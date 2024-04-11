@@ -277,7 +277,7 @@ SMS parseSMSEntry(const String& entry, const String& message) {
   sms.index = entry.substring(entry.indexOf(command) + command.length(), entry.indexOf(',')).toInt();
 
   // Extracting number and raw timestamp
-  sms.number = entry.substring(thirdQuoteIndex + 1, fourthQuoteIndex);
+  sms.sender = entry.substring(thirdQuoteIndex + 1, fourthQuoteIndex);
   String rawTimestamp = entry.substring(commaIndexBeforeTimestamp + 2, entry.indexOf('+', commaIndexBeforeTimestamp) + 3);
 
   // Parse the timestamp
