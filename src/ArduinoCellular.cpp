@@ -293,13 +293,11 @@ std::vector<String> splitStringByLines(const String& input, char delimiter = '\n
         if (endIndex == -1)
             endIndex = input.length();
         String line = input.substring(startIndex, endIndex);
-        if(line.length() > 0 && line != "\r" && line != "\n" && line != "\r\n"){
-            // Remove trailing \r if it exists
-            if (line.endsWith("\r")) {
-                line.remove(line.length() - 1);
-            }
-            lines.push_back(line);
+        // Remove trailing \r if it exists
+        if (line.endsWith("\r")) {
+            line.remove(line.length() - 1);
         }
+        lines.push_back(line);
         startIndex = endIndex + 1;
     }
     return lines;
@@ -309,19 +307,30 @@ std::vector<String> splitStringByLines(const String& input, char delimiter = '\n
 std::vector<SMS> parseSMSData(const String& data) {
     std::vector<SMS> smsList = std::vector<SMS>();    
     std::vector<String> lines = splitStringByLines(data);
-    
-    // Remove last line if it's "OK"
-    if (lines.size() > 0 && lines[lines.size() - 1] == "OK") {
-        lines.pop_back();
+
+    // Remove first line if it's empty
+    if (lines.size() > 0 && lines[0] == "") {
+        lines.erase(lines.begin());
     }
 
-    for(int i = 0; i < lines.size(); i += 2){
+    // Remove last 2 lines if second to last line is "OK"
+    if (lines.size() >= 2 && lines.back() == "OK") {
+        lines.erase(lines.end() - 2, lines.end());
+    }
+    
+    for(int i = 0; i < lines.size(); i ++){
         if (lines[i].startsWith("+CMGL:")) {
+            String entry = lines[i];
             String message = "";
-            if(i + 1 < lines.size()){
-                message = lines[i + 1];
+            // Loop through the lines until the next +CMGL line and extract the message by concatenating the lines
+            for (int j = i + 1; j < lines.size(); j++) {
+                if (lines[j].startsWith("+CMGL:")) {
+                    i = j - 1;
+                    break;
+                }
+                message += lines[j] + "\n";
             }
-            SMS sms = parseSMSEntry(lines[i], message);
+            SMS sms = parseSMSEntry(entry, message);
             smsList.push_back(sms);
         }
     }
