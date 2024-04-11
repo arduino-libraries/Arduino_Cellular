@@ -95,14 +95,15 @@ class ArduinoCellular {
         void begin();
 
         /**
-         * @brief Connects to the network using the specified APN, GPRS username, and GPRS password.
+         * @brief Registers with the cellular network and connects to the Internet
+         * if the APN, GPRS username, and GPRS password are provided.
          * @param apn The Access Point Name.
-         * @param gprsUser The GPRS username.
-         * @param gprsPass The GPRS password.
+         * @param username The APN username.
+         * @param password The APN password.
          * @param pin The SIM card PIN.
          * @return True if the connection is successful, false otherwise.
          */
-        bool connect(String apn, String gprsUser, String gprsPass, String pin = "");
+        bool connect(String apn = "", String username = "", String password = "", String pin = "");
 
         /**
          * @brief Checks if the modem is registered on the network.

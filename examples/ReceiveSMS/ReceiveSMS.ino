@@ -29,7 +29,7 @@ void setup(){
     cellular.begin();
     
     Serial.println("Connecting...");
-    cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
+    cellular.connect();
 
     // Register interrupt based callback for new SMS
     attachInterrupt(digitalPinToInterrupt(NEW_SMS_INTERRUPT_PIN), onSMSReceived, RISING);

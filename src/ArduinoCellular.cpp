@@ -43,33 +43,46 @@ void ArduinoCellular::begin() {
 
 }
 
-bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, String pin){
+bool ArduinoCellular::connect(String apn, String username, String password, String pin){
     SimStatus simStatus = getSimStatus();
     if(simStatus == SimStatus::SIM_LOCKED && pin.length() > 0){
        unlockSIM(pin.c_str());
     }
 
     simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_READY) {
-        if(awaitNetworkRegistration()){
-            if(connectToGPRS(apn.c_str(), gprsUser.c_str(), gprsPass.c_str())){
-                if(this->debugStream != nullptr){
-                    this->debugStream->println("Setting DNS...");
-                }
-                
-                auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
-                
-                if(this->debugStream != nullptr){
-                    this->debugStream->println(response);
-                }                
-                return true;
-            }
+    if(simStatus != SimStatus::SIM_READY) {
+        if(this->debugStream != nullptr){
+            this->debugStream->println("SIM not ready or incorrect PIN provided.");
+        }
+        return false;
+    }
+
+    if(!awaitNetworkRegistration()){    
+        return false;
+    }
+
+    if(apn.length() == 0){
+        if(this->debugStream != nullptr){
+            this->debugStream->println("No APN specified, not connecting to GPRS");
+        }
+        return true;       
+    }
+
+    if(connectToGPRS(apn.c_str(), username.c_str(), password.c_str())){
+        auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
+        
+        if(response.indexOf("OK") != -1){
+            return true;
         } else {
+            if(this->debugStream != nullptr){
+                this->debugStream->println("Failed to set DNS.");
+            }
             return false;
         }
+
     }
     
-    return false;    
+    return false;
 }
 
 
