@@ -249,9 +249,9 @@ Time parseTimestamp(const String &timestampStr) {
 
   int firstSlashIndex = date.indexOf('/');
   int secondSlashIndex = date.lastIndexOf('/');
-  day = date.substring(0, firstSlashIndex).toInt();
+  year = date.substring(0, firstSlashIndex).toInt() + 2000;
   month = date.substring(firstSlashIndex + 1, secondSlashIndex).toInt();
-  year = date.substring(secondSlashIndex + 1).toInt() + 2000;
+  day = date.substring(secondSlashIndex + 1).toInt();
 
   int firstColonIndex = time.indexOf(':');
   int secondColonIndex = time.lastIndexOf(':');
