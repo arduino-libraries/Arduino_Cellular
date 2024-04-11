@@ -107,10 +107,9 @@ class ArduinoCellular {
          * @param apn The Access Point Name.
          * @param username The APN username.
          * @param password The APN password.
-         * @param pin The SIM card PIN.
          * @return True if the connection is successful, false otherwise.
          */
-        bool connect(String apn = "", String username = "", String password = "", String pin = "");
+        bool connect(String apn = "", String username = "", String password = "");
 
         /**
          * @brief Checks if the modem is registered on the network.

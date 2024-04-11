@@ -43,16 +43,20 @@ void ArduinoCellular::begin() {
 
 }
 
-bool ArduinoCellular::connect(String apn, String username, String password, String pin){
+bool ArduinoCellular::connect(String apn, String username, String password){
     SimStatus simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_LOCKED && pin.length() > 0){
-       unlockSIM(pin.c_str());
+
+    if(simStatus == SimStatus::SIM_LOCKED){
+        if(this->debugStream != nullptr){
+            this->debugStream->println("SIM locked, cannot connect to network.");
+        }
+       
+       return false;
     }
 
-    simStatus = getSimStatus();
     if(simStatus != SimStatus::SIM_READY) {
         if(this->debugStream != nullptr){
-            this->debugStream->println("SIM not ready or incorrect PIN provided.");
+            this->debugStream->println("SIM not ready, cannot connect to network.");
         }
         return false;
     }
