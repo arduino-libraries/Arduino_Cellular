@@ -202,11 +202,11 @@ SimStatus ArduinoCellular::getSimStatus(){
     }
 }
 
-bool ArduinoCellular::unlockSIM(const char * pin){
+bool ArduinoCellular::unlockSIM(String pin){
     if(this->debugStream != nullptr){
         this->debugStream->println("Unlocking SIM...");
     }
-    return modem.simUnlock(pin); 
+    return modem.simUnlock(pin.c_str()); 
 }
 
 bool ArduinoCellular::awaitNetworkRegistration(){

@@ -95,6 +95,13 @@ class ArduinoCellular {
         void begin();
 
         /**
+         * @brief Unlocks the SIM card using the specified PIN.
+         * @param pin The SIM card PIN.
+         * @return True if the SIM card is unlocked, false otherwise.
+         */
+        bool unlockSIM(String pin);
+
+        /**
          * @brief Registers with the cellular network and connects to the Internet
          * if the APN, GPRS username, and GPRS password are provided.
          * @param apn The Access Point Name.
@@ -236,13 +243,6 @@ class ArduinoCellular {
          * @return The SIM card status.
          */
         SimStatus getSimStatus();
-
-        /**
-         * @brief Unlocks the SIM card using the specified PIN.
-         * @param pin The SIM card PIN.
-         * @return True if the SIM card is unlocked, false otherwise.
-         */
-        bool unlockSIM(const char * pin);
 
         /**
          * @brief Waits for network registration. (Blocking call)
