@@ -380,6 +380,12 @@ std::vector<SMS> ArduinoCellular::getUnreadSMS(){
     }
 }
 
+bool ArduinoCellular::deleteSMS(uint16_t index){
+    String command = "+CMGD=" + String(index);
+    String response = sendATCommand(const_cast<char *>(command.c_str()));
+    return response.indexOf("OK") != -1;
+}
+
 void ArduinoCellular::setDebugStream(Stream &stream){
     this->debugStream = &stream;
 }

@@ -177,6 +177,14 @@ class ArduinoCellular {
         std::vector<SMS> getUnreadSMS();
 
         /**
+         * @brief Deletes an SMS message at the specified index.
+         *
+         * @param index The index of the SMS message to delete.
+         * @return True if the SMS message was successfully deleted, false otherwise.
+         */
+        bool deleteSMS(uint16_t index);
+
+        /**
          * @brief Sends an AT command to the modem and waits for a response, then returns the response.
          * @param command The AT command to send.
          * @param timeout The timeout (In milliseconds) to wait for the response.
