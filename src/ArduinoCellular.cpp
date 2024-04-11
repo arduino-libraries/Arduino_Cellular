@@ -334,6 +334,9 @@ std::vector<SMS> parseSMSData(const String& data) {
                 }
                 message += lines[j] + "\n";
             }
+            // Remove the trailing newline character from the message
+            message.remove(message.length() - 1);
+
             SMS sms = parseSMSEntry(entry, message);
             smsList.push_back(sms);
         }
