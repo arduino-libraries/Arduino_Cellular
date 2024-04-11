@@ -25,8 +25,14 @@ void setup(){
     while (!Serial);
     // cellular.setDebugStream(Serial); // Uncomment this line to enable debug output
     cellular.begin();
+
+    String pinCode = ""; // If your SIM card has a PIN code, specify it here e.g. "1234"
+    if(pinCode.length() > 0 && !cellular.unlockSIM(pinCode)){
+        Serial.println("Failed to unlock SIM card.");
+        while(true); // Stop here
+    }
     
-    Serial.println("Connecting...");
+    Serial.println("Connecting to network...");
     cellular.connect();
     Serial.println("Connected!");
 

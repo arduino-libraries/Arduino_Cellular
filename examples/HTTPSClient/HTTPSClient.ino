@@ -11,15 +11,7 @@ const int  port       = 443;
 ArduinoCellular cellular = ArduinoCellular();
 HttpClient client = cellular.getHTTPSClient(server, port);
 
-void setup(){
-    Serial.begin(115200);
-    while (!Serial);
- 
-    cellular.begin();
-    cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
-}
-
-void loop(){
+void getResource(){
   Serial.println("Making GET request...");
 
   client.get(resource);
@@ -33,5 +25,28 @@ void loop(){
   Serial.println(response);
 
   client.stop();
-  delay(5000);
 }
+
+void setup(){
+    Serial.begin(115200);
+    while (!Serial);
+ 
+    // cellular.setDebugStream(Serial); // Uncomment this line to enable debug output
+    cellular.begin();
+
+    if(String(SECRET_PINNUMBER).length() > 0 && !cellular.unlockSIM(SECRET_PINNUMBER)){
+        Serial.println("Failed to unlock SIM card.");
+        while(true); // Stop here
+    }
+
+    Serial.println("Connecting...");
+    if(!cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD)){
+        Serial.println("Failed to connect to the network.");
+        while(true); // Stop here
+    }
+    Serial.println("Connected!");
+
+    getResource();
+}
+
+void loop(){}
