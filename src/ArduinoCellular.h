@@ -189,7 +189,7 @@ class ArduinoCellular {
          * @param timeout The timeout (In milliseconds) to wait for the response.
          * @return The response from the modem.
          */
-        String sendATCommand(char * command, unsigned long timeout = 1000);
+        String sendATCommand(const char * command, unsigned long timeout = 1000);
 
 
         /**

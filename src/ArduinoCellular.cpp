@@ -247,14 +247,12 @@ bool ArduinoCellular::enableGPS(bool assisted){
     //delay(10000);
 }
 
-String ArduinoCellular::sendATCommand( char * command, unsigned long timeout){
+String ArduinoCellular::sendATCommand(const char * command, unsigned long timeout){
     String resp;
-    modem.sendAT(const_cast<char *>(command)); 
+    modem.sendAT(command); 
     modem.waitResponse(timeout, resp);
     return resp;
 }
-
-
 
 Time parseTimestamp(const String &timestampStr) {
   int hour, minute, second, day, month, year, offset;
@@ -280,6 +278,7 @@ Time parseTimestamp(const String &timestampStr) {
 
   return Time(year, month, day, hour, minute, second, offset);
 }
+
 // Parses a single SMS entry from the data
 SMS parseSMSEntry(const String& entry, const String& message) {
   SMS sms;
