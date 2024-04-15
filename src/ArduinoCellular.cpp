@@ -14,9 +14,7 @@ ArduinoCellular::ArduinoCellular() {
 }
 
 void ArduinoCellular::begin() {
-    // set sim slot
     modem.init();
-
  
     String modemInfo = this ->sendATCommand("I");
     if(modemInfo.indexOf("EC200A") > 0){
@@ -252,10 +250,10 @@ bool ArduinoCellular::enableGPS(bool assisted){
 }
 
 String ArduinoCellular::sendATCommand(const char * command, unsigned long timeout){
-    String resp;
+    String response;
     modem.sendAT(command); 
-    modem.waitResponse(timeout, resp);
-    return resp;
+    modem.waitResponse(timeout, response);
+    return response;
 }
 
 Time parseTimestamp(const String &timestampStr) {

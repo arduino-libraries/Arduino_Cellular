@@ -26,9 +26,9 @@ public:
   /**
    * @brief Constructor for the ModemInterface class.
    * @param stream The stream object for communication with the modem.
-   * @param power_pin The pin number for controlling the power of the modem.
+   * @param powerPin The pin number for controlling the power of the modem.
    */
-  explicit ModemInterface(Stream& stream, int power_pin) : TinyGsmBG96(stream),stream(&stream),power_pin(power_pin) {
+  explicit ModemInterface(Stream& stream, int powerPin) : TinyGsmBG96(stream),stream(&stream),powerPin(powerPin) {
     
   };
 
@@ -38,8 +38,8 @@ public:
    * @return True if initialization is successful, false otherwise.
    */
   bool init(const char* pin = NULL) {
-    pinMode(power_pin, OUTPUT);
-    digitalWrite(power_pin, HIGH);
+    pinMode(powerPin, OUTPUT);
+    digitalWrite(powerPin, HIGH);
     delay(1000);
     #ifdef DUMP_AT_COMMANDS
       #if defined(ARDUINO_PORTENTA_C33)
@@ -54,7 +54,7 @@ public:
 
 public:
   Stream* stream; /**< The stream object for communication with the modem. */
-  int power_pin; /**< The pin number for controlling the power of the modem. */
+  int powerPin; /**< The pin number for controlling the power of the modem. */
 };
 
 /**
