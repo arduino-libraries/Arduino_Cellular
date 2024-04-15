@@ -17,6 +17,7 @@ void setup(){
     Serial.println("Connecting...");
     cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD);
     Serial.println("Connected!");
+    Serial.println("You can now send AT commands to the modem.");
 }
 
 void loop() {
