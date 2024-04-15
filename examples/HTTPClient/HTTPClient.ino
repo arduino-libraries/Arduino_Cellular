@@ -1,3 +1,18 @@
+/**
+ * This example demonstrates how to make a HTTP GET request using 
+ * the ArduinoHttpClient library and the ArduinoCellular library.
+ * 
+ * Instructions:
+ * 1. Insert a SIM card with or without PIN code in the Arduino Pro 4G Module.
+ * 2. Provide sufficient power to the Arduino Pro 4G Module. Ideally, use a 5V power supply
+ *    with a current rating of at least 2A and connect it to the VIN and GND pins.
+ * 3. Specify the APN, login, and password for your cellular network provider.
+ * 4. Upload the sketch to the connected Arduino board.
+ * 5. Open the serial monitor to view the output.
+ * 
+ * Initial author: Cristian Dragomir
+*/
+
 #define ARDUINO_CELLULAR_DEBUG
 
 #include "ArduinoCellular.h"

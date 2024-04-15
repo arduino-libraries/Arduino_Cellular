@@ -1,3 +1,17 @@
+/**
+ * The ModemTerminal example demonstrates how to use the ArduinoCellular library to send raw AT commands to the modem.
+ * 
+ * Instructions:
+ * 1. Insert a SIM card with or without PIN code in the Arduino Pro 4G Module.
+ * 2. Provide sufficient power to the Arduino Pro 4G Module. Ideally, use a 5V power supply
+ *   with a current rating of at least 2A and connect it to the VIN and GND pins.
+ * 3. Specify the APN, login, and password for your cellular network provider.
+ * 4. Upload the sketch to the connected Arduino board.
+ * 5. Open the serial monitor and type AT commands to interact with the modem.
+ * 
+ * Initial author: Cristian Dragomir
+*/
+
 #include "ArduinoCellular.h"
 #include "arduino_secrets.h"
 

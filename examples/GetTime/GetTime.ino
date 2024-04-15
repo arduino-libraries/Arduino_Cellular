@@ -1,3 +1,16 @@
+/**
+ * This example demonstrates how to get the current time using the ArduinoCellular library.
+ * It derives the time from GPS connection.
+ * 
+ * Instructions:
+ * 1. Move the Arduino Pro 4G Module to an outdoor location with a clear view of the sky.
+ * 2. Provide sufficient power to the Arduino Pro 4G Module. Ideally, use a 5V power supply
+ * 3. Upload the sketch to the connected Arduino board.
+ * 4. Open the serial monitor to view the output.
+ * 
+ * Initial author: Cristian Dragomir
+*/
+
 #include "ArduinoCellular.h"
 
 ArduinoCellular cellular = ArduinoCellular();

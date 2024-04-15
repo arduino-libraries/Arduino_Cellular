@@ -1,3 +1,19 @@
+/**
+ * This example demonstrates how to receive SMS messages using ArduinoCellular library.
+ * It supports both polling and interrupt based methods to check for new SMS messages.
+ * 
+ * Instructions:
+ * 1. Insert a SIM card with or without PIN code in the Arduino Pro 4G Module.
+ * 2. Provide sufficient power to the Arduino Pro 4G Module. Ideally, use a 5V power supply
+ *    with a current rating of at least 2A and connect it to the VIN and GND pins.
+ * 3. Specify the PIN code of your SIM card if it has one.
+ * 4. Upload the sketch to the connected Arduino board.
+ * 5. Send an SMS to the SIM card number to test the SMS reception. 
+ * 6. Check the serial monitor for the received SMS.
+ * 
+ * Initial author: Cristian Dragomir
+*/
+
 #include "ArduinoCellular.h"
 
 constexpr int NEW_SMS_INTERRUPT_PIN = A0;
