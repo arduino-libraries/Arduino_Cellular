@@ -27,7 +27,7 @@
 */
 enum ModemModel {
     EC200, /**< Quectel EC200 modem. */
-    EG95,  /**< Quectel EG95 modem. */
+    EG25,  /**< Quectel EG25 modem. */
     Unsupported /**< Unsupported modem model. */
 };
 

@@ -21,8 +21,8 @@ void ArduinoCellular::begin() {
     String modemInfo = this ->sendATCommand("I");
     if(modemInfo.indexOf("EC200A") > 0){
         this->model = ModemModel::EC200;
-    } else if (modemInfo.indexOf("EG95") > 0){
-        this->model = ModemModel::EG95;
+    } else if (modemInfo.indexOf("EG25") > 0){
+        this->model = ModemModel::EG25;
     } else {
         this->model = ModemModel::Unsupported;
     }
@@ -91,7 +91,7 @@ bool ArduinoCellular::connect(String apn, String username, String password){
 
 
 Location ArduinoCellular::getGPSLocation(unsigned long timeout){
-    if (model == ModemModel::EG95){
+    if (model == ModemModel::EG25){
         float latitude = 0.00000;
         float longitude = 0.00000;
         unsigned long startTime = millis();
