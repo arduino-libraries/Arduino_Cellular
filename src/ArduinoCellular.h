@@ -138,13 +138,6 @@ class ArduinoCellular {
         Location getGPSLocation(unsigned long timeout = 60000);
         
         /**
-         * @brief Gets the cellular location. (Blocking call) 
-         * @param timeout The timeout (In milliseconds) to wait for the cellular location. 
-         * @return The cellular location. If the location is not retrieved, the latitude and longitude will be 0.0.
-         */
-        Location getCellularLocation(unsigned long timeout = 10000);
-
-        /**
          * @brief Gets the current time from the network.
          * @return The current time.
          */
