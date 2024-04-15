@@ -231,20 +231,24 @@ bool ArduinoCellular::enableGPS(bool assisted){
         this->debugStream->println("Enabling GPS...");
     }
 
+    String response;
+
     if(assisted){
-        sendATCommand("AT+QGPSCFG=\"agpsposmode\",33488767");
+        response = sendATCommand("+QGPSCFG=\"agpsposmode\",33488767", 10000);
     } else {
-        sendATCommand("AT+QGPSCFG=\"agpsposmode\",8388608");
+        // Sets the 23rd bit to 1 to enable standalone GPS
+        response = sendATCommand("+QGPSCFG=\"agpsposmode\",8388608", 10000);
     }
 
-    //modem.sendAT(GF("+UTIME=1,1"));
-    //modem.waitResponse();
-    //modem.sendAT(GF("+UGPIOC=23,0,1"));
-
-    //modem.waitResponse();
+    if(response.indexOf("OK") == -1){
+        if(this->debugStream != nullptr){
+            this->debugStream->println("Failed to set GPS mode.");
+            this->debugStream->println("Response: " + response);
+        }
+        return false;
+    }
 
     return modem.enableGPS();
-    //delay(10000);
 }
 
 String ArduinoCellular::sendATCommand(const char * command, unsigned long timeout){
