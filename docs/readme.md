@@ -125,11 +125,6 @@ GPS Location is ideal for applications requiring high-precision location data, s
 
 To enable GPS Location you will need to call `enableGPS(bool assisted)`. Assisted GPS or A-GPS is an enhancement of GPS that uses the cellular network to get the location, it performs that much quicker than without assistance but depends on Cellular network coverage. 
 
-### Cellular Location
-**Method Overview:** `getCellularLocation(unsigned long timeout = 10000)` also provides location tracking but utilizes the cellular network. Similar to the GPS method, it's a blocking call with a specified timeout, returning latitude and longitude values through a Location structure. If the location is not obtained, the values default to 0.0.
-
-Cellular location is suitable for scenarios where GPS signals are weak or unavailable, offering a broader coverage area at the expense of location accuracy. This method leverages the cellular network's infrastructure to approximate the device's location.
-
 ### Time Synchronization
 Time synchronization is crucial for maintaining accurate timing across IoT devices, especially for data logging, scheduled tasks, and time-stamped communications.
 
