@@ -26,7 +26,7 @@ It allows you to connect to the internet, send and receive SMS messages, and get
 ## 👀 Instructions
 1. Insert your Arduino 4G module to the [Arduino Portenta Mid Carrier](https://store.arduino.cc/collections/portenta-family/products/portenta-mid-carrier)
 2. Insert a valid SIM card either in the **PCIE_SIM** connector on the Portenta Mid Carrier
-3. Connect the 6 **SERIAL1** header pins to their corresponding pins on the **PCIE_BREAKOUT** header using jumpers
+3. Connect the 5 **SERIAL1** header pins to their corresponding pins on the **PCIE_BREAKOUT** header using jumpers
 ![](./docs/header.jpg)
 4. Connect the **3V3 PCIE** pin to the **3V3 Buck** 
 ![](./docs/buck.jpg)
