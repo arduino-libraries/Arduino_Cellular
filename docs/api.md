@@ -22,7 +22,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`connect`](#class_arduino_cellular_1a7fb3c3e841b39c4faacef32cec6277b4) | Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
-| [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS module. |
+| [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS functionality. |
 | [`getGPSLocation`](#class_arduino_cellular_1aee57a2eec5be06172b2fb7cd574d9106) | Gets the GPS location. (Blocking call) |
 | [`getCellularTime`](#class_arduino_cellular_1a6b3ce5485badff582584d539e790aff4) | Gets the current time from the network. |
 | [`getGPSTime`](#class_arduino_cellular_1a4aeb898c958e6eb001d606f0c7da8799) | Gets the current time from the GPS module. |
@@ -126,13 +126,13 @@ True if the GPRS network is connected, false otherwise.
 bool enableGPS(bool assisted)
 ```
 
-Enables or disables the GPS module.
+Enables or disables the GPS functionality.
 
 #### Parameters
 * `assisted` True to enable assisted GPS, false to disable it. Assist GPS uses the network to get the GPS location faster, so cellular needs to be enabled. 
 
 #### Returns
-True if the GPS module is enabled, false otherwise.
+True if GPS was enabled successfully, false otherwise.
 <hr />
 
 ### `getGPSLocation` <a id="class_arduino_cellular_1aee57a2eec5be06172b2fb7cd574d9106" class="anchor"></a>
