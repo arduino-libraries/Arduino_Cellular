@@ -18,18 +18,19 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 --------------------------------|---------------------------------------------
 | [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Default constructor. |
 | [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. |
-| [`connect`](#class_arduino_cellular_1a041c9d5c546b82858b01859383d11fb7) | Connects to the network using the specified APN, GPRS username, and GPRS password. |
+| [`unlockSIM`](#class_arduino_cellular_1aa0be2795ff7b23c39ecef90d9906bbdf) | Unlocks the SIM card using the specified PIN. |
+| [`connect`](#class_arduino_cellular_1a7fb3c3e841b39c4faacef32cec6277b4) | Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
 | [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS module. |
 | [`getGPSLocation`](#class_arduino_cellular_1aee57a2eec5be06172b2fb7cd574d9106) | Gets the GPS location. (Blocking call) |
-| [`getCellularLocation`](#class_arduino_cellular_1ac94da4914e08cc549134e6fe5575b5a6) | Gets the cellular location. (Blocking call) |
 | [`getCellularTime`](#class_arduino_cellular_1a6b3ce5485badff582584d539e790aff4) | Gets the current time from the network. |
 | [`getGPSTime`](#class_arduino_cellular_1a4aeb898c958e6eb001d606f0c7da8799) | Gets the current time from the GPS module. |
 | [`sendSMS`](#class_arduino_cellular_1a371aef1318857f0863f443eaeabf4ac2) | Sends an [SMS](#class_s_m_s) message to the specified number. |
 | [`getReadSMS`](#class_arduino_cellular_1a5da65683df86af75590c7a68766236ee) | Gets the list of read [SMS](#class_s_m_s) messages. |
 | [`getUnreadSMS`](#class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5) | Gets the list of unread [SMS](#class_s_m_s) messages. |
-| [`sendATCommand`](#class_arduino_cellular_1a1d20e97f47d05d5420a98f79f213f978) | Sends an AT command to the modem and waits for a response, then returns the response. |
+| [`deleteSMS`](#class_arduino_cellular_1abe4337f0bc8c486a076011309120ace1) | Deletes an [SMS](#class_s_m_s) message at the specified index. |
+| [`sendATCommand`](#class_arduino_cellular_1a58a3e3713af0c01ad1075a2509c6874d) | Sends an AT command to the modem and waits for a response, then returns the response. |
 | [`getNetworkClient`](#class_arduino_cellular_1acff92474af3bd819b62f132cf12f45ba) | Gets the Network client. (OSI Layer 3) |
 | [`getSecureNetworkClient`](#class_arduino_cellular_1a8b7486d1a682787588c015af8d65a38e) | Gets the Transport Layer Security (TLS) client. (OSI Layer 4) |
 | [`getHTTPClient`](#class_arduino_cellular_1aa1b4c3bbd14984d2a7ed1db7fa1ac930) | Gets the HTTP client for the specified server and port. |
@@ -60,22 +61,35 @@ Initializes the modem.
 
 <hr />
 
-### `connect` <a id="class_arduino_cellular_1a041c9d5c546b82858b01859383d11fb7" class="anchor"></a>
+### `unlockSIM` <a id="class_arduino_cellular_1aa0be2795ff7b23c39ecef90d9906bbdf" class="anchor"></a>
 
 ```cpp
-bool connect(String apn, String gprsUser, String gprsPass, String pin)
+bool unlockSIM(String pin)
 ```
 
-Connects to the network using the specified APN, GPRS username, and GPRS password.
+Unlocks the SIM card using the specified PIN.
+
+#### Parameters
+* `pin` The SIM card PIN. 
+
+#### Returns
+True if the SIM card is unlocked, false otherwise.
+<hr />
+
+### `connect` <a id="class_arduino_cellular_1a7fb3c3e841b39c4faacef32cec6277b4" class="anchor"></a>
+
+```cpp
+bool connect(String apn, String username, String password)
+```
+
+Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided.
 
 #### Parameters
 * `apn` The Access Point Name. 
 
-* `gprsUser` The GPRS username. 
+* `username` The APN username. 
 
-* `gprsPass` The GPRS password. 
-
-* `pin` The SIM card PIN. 
+* `password` The APN password. 
 
 #### Returns
 True if the connection is successful, false otherwise.
@@ -133,21 +147,6 @@ Gets the GPS location. (Blocking call)
 
 #### Returns
 The GPS location. If the location is not retrieved, the latitude and longitude will be 0.0.
-<hr />
-
-### `getCellularLocation` <a id="class_arduino_cellular_1ac94da4914e08cc549134e6fe5575b5a6" class="anchor"></a>
-
-```cpp
-Location getCellularLocation(unsigned long timeout)
-```
-
-Gets the cellular location. (Blocking call)
-
-#### Parameters
-* `timeout` The timeout (In milliseconds) to wait for the cellular location. 
-
-#### Returns
-The cellular location. If the location is not retrieved, the latitude and longitude will be 0.0.
 <hr />
 
 ### `getCellularTime` <a id="class_arduino_cellular_1a6b3ce5485badff582584d539e790aff4" class="anchor"></a>
@@ -212,10 +211,25 @@ Gets the list of unread [SMS](#class_s_m_s) messages.
 A vector of [SMS](#class_s_m_s) messages.
 <hr />
 
-### `sendATCommand` <a id="class_arduino_cellular_1a1d20e97f47d05d5420a98f79f213f978" class="anchor"></a>
+### `deleteSMS` <a id="class_arduino_cellular_1abe4337f0bc8c486a076011309120ace1" class="anchor"></a>
 
 ```cpp
-String sendATCommand(char * command, unsigned long timeout)
+bool deleteSMS(uint16_t index)
+```
+
+Deletes an [SMS](#class_s_m_s) message at the specified index.
+
+#### Parameters
+* `index` The index of the [SMS](#class_s_m_s) message to delete. 
+
+#### Returns
+True if the [SMS](#class_s_m_s) message was successfully deleted, false otherwise.
+<hr />
+
+### `sendATCommand` <a id="class_arduino_cellular_1a58a3e3713af0c01ad1075a2509c6874d" class="anchor"></a>
+
+```cpp
+String sendATCommand(const char * command, unsigned long timeout)
 ```
 
 Sends an AT command to the modem and waits for a response, then returns the response.
@@ -223,7 +237,7 @@ Sends an AT command to the modem and waits for a response, then returns the resp
 #### Parameters
 * `command` The AT command to send. 
 
-* `timeout` The timeout (In milliseconds) to wait for the response. 
+* `timeout` The timeout (In milliseconds) to wait for the response. Default is 1000ms. 
 
 #### Returns
 The response from the modem.
@@ -339,8 +353,8 @@ Represents the interface to the 4G modem module.
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 | [`stream`](#class_modem_interface_1a4a8be6e54608e2cbd9704614b807b4b0) | The stream object for communication with the modem. |
-| [`power_pin`](#class_modem_interface_1a3b23e45b1497e372a4965d87656523d6) | The pin number for controlling the power of the modem. |
-| [`ModemInterface`](#class_modem_interface_1a4fad197930f994b036cc3f1645612fce) | Constructor for the [ModemInterface](#class_modem_interface) class. |
+| [`powerPin`](#class_modem_interface_1a26e5e7417ff90759520c89776fb0c7f2) | The pin number for controlling the power of the modem. |
+| [`ModemInterface`](#class_modem_interface_1aa364cae2d778d717ca1c53a0e4ee8702) | Constructor for the [ModemInterface](#class_modem_interface) class. |
 | [`init`](#class_modem_interface_1a2f8f381994be24bb821ace646f7fde9b) | Initializes the modem interface. |
 
 ## Members
@@ -354,19 +368,19 @@ Stream * stream
 The stream object for communication with the modem.
 <hr />
 
-### `power_pin` <a id="class_modem_interface_1a3b23e45b1497e372a4965d87656523d6" class="anchor"></a>
+### `powerPin` <a id="class_modem_interface_1a26e5e7417ff90759520c89776fb0c7f2" class="anchor"></a>
 
 ```cpp
-int power_pin
+int powerPin
 ```
 
 The pin number for controlling the power of the modem.
 <hr />
 
-### `ModemInterface` <a id="class_modem_interface_1a4fad197930f994b036cc3f1645612fce" class="anchor"></a>
+### `ModemInterface` <a id="class_modem_interface_1aa364cae2d778d717ca1c53a0e4ee8702" class="anchor"></a>
 
 ```cpp
-inline explicit ModemInterface(Stream & stream, int power_pin)
+inline explicit ModemInterface(Stream & stream, int powerPin)
 ```
 
 Constructor for the [ModemInterface](#class_modem_interface) class.
@@ -374,7 +388,7 @@ Constructor for the [ModemInterface](#class_modem_interface) class.
 #### Parameters
 * `stream` The stream object for communication with the modem. 
 
-* `power_pin` The pin number for controlling the power of the modem.
+* `powerPin` The pin number for controlling the power of the modem.
 <hr />
 
 ### `init` <a id="class_modem_interface_1a2f8f381994be24bb821ace646f7fde9b" class="anchor"></a>
@@ -400,18 +414,28 @@ Represents an [SMS](#class_s_m_s) message.
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-| [`number`](#class_s_m_s_1a7e93b46a5ea599e6fdc27295afaf4c51) | The phone number associated with the [SMS](#class_s_m_s). |
+| [`index`](#class_s_m_s_1a1d7df5242fd17e58cb5c7ef1f81472fb) | The index of the [SMS](#class_s_m_s) message. |
+| [`sender`](#class_s_m_s_1aafb60a0ef09724cc5e3f659505c9dab3) | The phone number associated with the [SMS](#class_s_m_s). |
 | [`message`](#class_s_m_s_1ad2f3aac08b66f78472b18727a653c7c4) | The content of the [SMS](#class_s_m_s) message. |
 | [`timestamp`](#class_s_m_s_1a8f275bdda4111b2ecc95f269cec70940) | The timestamp when the [SMS](#class_s_m_s) was received. |
 | [`SMS`](#class_s_m_s_1ac4a683a43558570b5a9cb3a92100c29e) | Default constructor for [SMS](#class_s_m_s). Initializes the number, message, and timestamp to empty values. |
-| [`SMS`](#class_s_m_s_1a964afc86f65da37c4bf8e099e250f9de) | Constructor for [SMS](#class_s_m_s).  |
+| [`SMS`](#class_s_m_s_1abb10fd15a6e3d1f3b6a9bb24123d4e0a) | Constructor for [SMS](#class_s_m_s).  |
 
 ## Members
 
-### `number` <a id="class_s_m_s_1a7e93b46a5ea599e6fdc27295afaf4c51" class="anchor"></a>
+### `index` <a id="class_s_m_s_1a1d7df5242fd17e58cb5c7ef1f81472fb" class="anchor"></a>
 
 ```cpp
-String number
+int16_t index
+```
+
+The index of the [SMS](#class_s_m_s) message.
+<hr />
+
+### `sender` <a id="class_s_m_s_1aafb60a0ef09724cc5e3f659505c9dab3" class="anchor"></a>
+
+```cpp
+String sender
 ```
 
 The phone number associated with the [SMS](#class_s_m_s).
@@ -444,15 +468,17 @@ inline SMS()
 Default constructor for [SMS](#class_s_m_s). Initializes the number, message, and timestamp to empty values.
 <hr />
 
-### `SMS` <a id="class_s_m_s_1a964afc86f65da37c4bf8e099e250f9de" class="anchor"></a>
+### `SMS` <a id="class_s_m_s_1abb10fd15a6e3d1f3b6a9bb24123d4e0a" class="anchor"></a>
 
 ```cpp
-inline SMS(String number, String message, Time timestamp)
+inline SMS(int16_t index, String sender, String message, Time timestamp)
 ```
 
 Constructor for [SMS](#class_s_m_s). 
 #### Parameters
-* `number` The phone number associated with the [SMS](#class_s_m_s). 
+* `index` The index of the [SMS](#class_s_m_s) message. 
+
+* `sender` The phone number associated with the sender of the [SMS](#class_s_m_s). 
 
 * `message` The content of the [SMS](#class_s_m_s) message. 
 
