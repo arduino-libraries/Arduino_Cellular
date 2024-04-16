@@ -85,12 +85,13 @@ struct Location {
 class ArduinoCellular {
     public: 
         /**
-         * @brief Default constructor.
+         * @brief Creates an instance of the ArduinoCellular class.
          */
         ArduinoCellular();
 
         /**
          * @brief Initializes the modem.
+         * This function must be called before using any other functions in the library.
          */
         void begin();
 
