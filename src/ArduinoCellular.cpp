@@ -10,7 +10,6 @@ unsigned long ArduinoCellular::getTime() {
 }
 
 ArduinoCellular::ArduinoCellular() {
-    
 }
 
 void ArduinoCellular::begin() {
