@@ -184,6 +184,13 @@ class ArduinoCellular {
          */
         String sendATCommand(const char * command, unsigned long timeout = 1000);
 
+
+
+        /**
+         * @brief Sends a USSD command to the network operator and waits for a response.
+         * @param command The USSD command to send.
+         * @return The response from the network operator. (Note: The response may be an SMS message or a USSD response)
+         */
         String sendUSSDCommand(const char * command);
     
 

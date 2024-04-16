@@ -25,9 +25,12 @@ env:
   UNIVERSAL_SKETCH_PATHS: |
         - examples/HTTPClient
         - examples/HTTPSClient
-        - examples/TimeAndLocation
+        - examples/GetTime
+        - examples/GetLocation
+        - examples/DeleteSMS
         - examples/ReceiveSMS
         - examples/SendSMS
+        - examples/ModemTerminal
   SKETCHES_REPORTS_PATH: sketches-reports
   SKETCHES_REPORTS_ARTIFACT_NAME: sketches-reports
 
