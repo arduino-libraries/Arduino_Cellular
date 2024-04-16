@@ -3,7 +3,7 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `class ` [`ArduinoCellular`](#class_arduino_cellular) | This class provides methods to interact with the Arduino Pro Modem, such as connecting to the network, sending [SMS](#class_s_m_s) messages, getting GPS location, and more.
-`class ` [`ModemInterface`](#class_modem_interface) | Represents the interface to the 4G modem module.
+`class ` [`ModemInterface`](#class_modem_interface) | Represents the interface to the 4G modem module which extends the TinyGsmBG96 class.
 `class ` [`SMS`](#class_s_m_s) | Represents an [SMS](#class_s_m_s) message.
 `class ` [`Time`](#class_time) | Represents a point in time with year, month, day, hour, minute, second, and offset.
 `struct ` [`Location`](#struct_location) | Represents a geographic location with latitude and longitude coordinates.
@@ -31,6 +31,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`getUnreadSMS`](#class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5) | Gets the list of unread [SMS](#class_s_m_s) messages. |
 | [`deleteSMS`](#class_arduino_cellular_1abe4337f0bc8c486a076011309120ace1) | Deletes an [SMS](#class_s_m_s) message at the specified index. |
 | [`sendATCommand`](#class_arduino_cellular_1a58a3e3713af0c01ad1075a2509c6874d) | Sends an AT command to the modem and waits for a response, then returns the response. |
+| [`sendUSSDCommand`](#class_arduino_cellular_1a6886aec5850836ea8e8f135d4e5632ab) | Sends a USSD command to the network operator and waits for a response. |
 | [`getNetworkClient`](#class_arduino_cellular_1acff92474af3bd819b62f132cf12f45ba) | Gets the Network client. (OSI Layer 3) |
 | [`getSecureNetworkClient`](#class_arduino_cellular_1a8b7486d1a682787588c015af8d65a38e) | Gets the Transport Layer Security (TLS) client. (OSI Layer 4) |
 | [`getHTTPClient`](#class_arduino_cellular_1aa1b4c3bbd14984d2a7ed1db7fa1ac930) | Gets the HTTP client for the specified server and port. |
@@ -243,6 +244,21 @@ Sends an AT command to the modem and waits for a response, then returns the resp
 The response from the modem.
 <hr />
 
+### `sendUSSDCommand` <a id="class_arduino_cellular_1a6886aec5850836ea8e8f135d4e5632ab" class="anchor"></a>
+
+```cpp
+String sendUSSDCommand(const char * command)
+```
+
+Sends a USSD command to the network operator and waits for a response.
+
+#### Parameters
+* `command` The USSD command to send. 
+
+#### Returns
+The response from the network operator. (Note: The response may be an [SMS](#class_s_m_s) message or a USSD response)
+<hr />
+
 ### `getNetworkClient` <a id="class_arduino_cellular_1acff92474af3bd819b62f132cf12f45ba" class="anchor"></a>
 
 ```cpp
@@ -346,7 +362,7 @@ class ModemInterface
   : public TinyGsmBG96
 ```
 
-Represents the interface to the 4G modem module.
+Represents the interface to the 4G modem module which extends the TinyGsmBG96 class.
 
 ## Summary
 
@@ -355,7 +371,7 @@ Represents the interface to the 4G modem module.
 | [`stream`](#class_modem_interface_1a4a8be6e54608e2cbd9704614b807b4b0) | The stream object for communication with the modem. |
 | [`powerPin`](#class_modem_interface_1a26e5e7417ff90759520c89776fb0c7f2) | The pin number for controlling the power of the modem. |
 | [`ModemInterface`](#class_modem_interface_1aa364cae2d778d717ca1c53a0e4ee8702) | Constructor for the [ModemInterface](#class_modem_interface) class. |
-| [`init`](#class_modem_interface_1a2f8f381994be24bb821ace646f7fde9b) | Initializes the modem interface. |
+| [`init`](#class_modem_interface_1a2f8f381994be24bb821ace646f7fde9b) | Initializes the modem interface. (Overrides the init method in TinyGsmBG96) |
 
 ## Members
 
@@ -397,7 +413,7 @@ Constructor for the [ModemInterface](#class_modem_interface) class.
 inline bool init(const char * pin)
 ```
 
-Initializes the modem interface.
+Initializes the modem interface. (Overrides the init method in TinyGsmBG96)
 
 #### Parameters
 * `pin` The PIN code for the SIM card (optional). 
