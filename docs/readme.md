@@ -1,30 +1,30 @@
-# Arduino Cellular Library
+# 📡 Arduino Cellular Library
 
-
-## Initialising 
+## ⤵️ Initialising 
 This guide outlines the steps to establish cellular network connectivity using an Arduino equipped with a cellular modem. The process involves initializing the modem, setting necessary configurations, and establishing a connection to the network.
 
 First, you need to include the ArduinoCellular library in your sketch. This library facilitates communication between your Arduino board and the cellular module.
 
-```c
+```cpp
 #include <ArduinoCellular.h>
 ```
 
 Create an instance of the ArduinoCellular class. This instance will be used to interact with the cellular module.
 
-```c
+```cpp
 ArduinoCellular cellular = ArduinoCellular();
 ```
 
 To begin, initialize the modem with basic configurations such as setting the modem to text mode, enabling intrrerupts etc.  This is done by calling the begin() method on your cellular instance. 
-```c
+```cpp
 cellular.begin();
 ```
 
-To connect to your mobile network and start a cellular data session, use the connect() method. This requires the APN (Access Point Name), login credentials (if any), and your SIM card's PIN number (if it's locked).
+To connect to your mobile network and start a cellular data session, use the connect() method. This requires the APN (Access Point Name) and login credentials (if any). You can unlock your SIM card's using its PIN number (if it's locked).
 
-```c
-cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD, SECRET_PINNUMBER);
+```cpp
+cellular.unlockSIM(SECRET_PINNUMBER)
+cellular.connect(SECRET_GPRS_APN, SECRET_GPRS_LOGIN, SECRET_GPRS_PASSWORD);
 
 ```
 
@@ -33,7 +33,7 @@ Note: It's a best practice to store sensitive information like the GPRS APN, log
 **arduino_secrets.h**
 Create or edit the arduino_secrets.h file in your project directory and define the necessary secrets as follows:
 
-```c
+```cpp
 #define SECRET_GPRS_APN        "your_apn_here"
 #define SECRET_GPRS_LOGIN      "your_login_here"
 #define SECRET_GPRS_PASSWORD   "your_password_here"
@@ -43,7 +43,7 @@ Create or edit the arduino_secrets.h file in your project directory and define t
 Replace the placeholder values with the actual APN, login, password, and PIN number provided by your mobile network operator or SIM card provider.
 
 
-## Network  
+## 🌐 Network  
 The Arduino environment provides a set of classes designed to abstract the complexities of handling network communications. Among these, the Client class plays a crucial role as it defines a standard interface for network communication across various Arduino-compatible networking libraries. 
 
 The Arduino networking stack is designed to simplify the process of implementing network communication for IoT (Internet of Things) projects. This stack encompasses both hardware (e.g., Ethernet shields, WiFi modules) and software components (libraries that interface with the hardware). The stack is built in a way that allows sketches (Arduino programs) to communicate over the network using common protocols like TCP and UDP without needing to delve into the low-level mechanics of these protocols.
@@ -63,13 +63,13 @@ This layered approach is not only modular but also highly flexible, allowing dev
 
 ### Network Client (OSI Layer 3)
 Represents a basic client for network communication, suitable for protocols like TCP/IP.
-```c
+```cpp
 TinyGSMClient client = cellular.getNetworkClient();
 ```
 
 ### Secure Network Client 
 Adds a layer of security by implementing SSL/TLS encryption over the basic client.
-```c
+```cpp
 BearSSLClient secureClient = cellular.getSecureNetworkClient();
 ```
 
@@ -78,20 +78,20 @@ For convenience we added getters for http and https clients.
 ### HTTP and HTTPS Clients:
 These are high-level clients designed for web communication. They abstract the complexities of HTTP/HTTPS protocols, making it easy to send web requests and process responses.
 
-```c
+```cpp
 HttpClient http = cellular.getHTTPClient(server, port);
 HttpClient http = cellular.getHTTPSClient(server, port);
 ```
 
 
 
-## SMS 
+## 📨 SMS 
 The SMS functionality allows devices to exchange information with users or other systems through simple text messages, enabling a wide range of applications from remote monitoring to control systems or a fallback communication method when the others are not available. 
 
 ### Reading SMS Messages
 **getReadSMS():** This method returns a vector containing SMS messages that have already been read. It's particularly useful for applications that need to process or display messages that have been acknowledged.
 
-**getUnreadSMS(): **This method fetches a vector of unread SMS messages, allowing the application to process or notify users about new messages.
+**getUnreadSMS():** This method fetches a vector of unread SMS messages, allowing the application to process or notify users about new messages.
 
 Each SMS message is represented as an instance of the `SMS` class, which contains the sender's number, the message text, and a timestamp marking when the message was received.
 
@@ -99,7 +99,7 @@ Each SMS message is represented as an instance of the `SMS` class, which contain
 ### The SMS Class
 The SMS class serves as a container for information related to a single SMS message. It includes the following attributes:
 
-* `number`: The phone number from which the SMS was sent.
+* `sender`: The phone number from which the SMS was sent.
 * `message`: The body of the SMS message.
 * `timestamp`: A timestamp indicating when the message was received by the module.
 
@@ -115,7 +115,7 @@ The method sendSMS() is designed for this purpose, taking two parameters:
 
 This functionality allows Arduino devices to communicate outwardly to users or other systems, sending alerts, data, or control commands via SMS.
 
-## Time and Location
+## ⌚️📍 Time and Location
 These features enable precise tracking of device locations and ensure synchronized operations across different systems. This guide focuses on utilizing GPS and cellular network capabilities for location tracking and time synchronization. It's important to note that GPS functionality is exclusively available in the Global Version of the modem, highlighting the need for appropriate hardware selection based on the project requirements.
 
 ### GPS Location
