@@ -52,6 +52,12 @@ void setup(){
     cellular.connect();
     Serial.println("Connected!");
 
+    // Send USSD command for cost control, if supported by the network provider
+    // Some network providers send the response as an SMS message
+    // Some network providers send the response as a USSD response
+    //Serial.println("Sending USSD command...");
+    //Serial.println(cellular.sendUSSDCommand("*123#"));
+
     // Register interrupt based callback for new SMS
     attachInterrupt(digitalPinToInterrupt(NEW_SMS_INTERRUPT_PIN), onSMSReceived, RISING);
 

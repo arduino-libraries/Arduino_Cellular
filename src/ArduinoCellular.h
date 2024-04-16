@@ -184,6 +184,9 @@ class ArduinoCellular {
          */
         String sendATCommand(const char * command, unsigned long timeout = 1000);
 
+        String sendUSSDCommand(const char * command);
+    
+
 
         /**
          * @brief Gets the Network client. (OSI Layer 3)

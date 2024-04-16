@@ -363,6 +363,10 @@ std::vector<SMS> parseSMSData(const String& data) {
   return smsList;
 }
 
+String ArduinoCellular::sendUSSDCommand(const char * command){
+    return modem.sendUSSD(command);
+}
+
 std::vector<SMS> ArduinoCellular::getReadSMS(){
     String rawMessages = sendATCommand("+CMGL=\"REC READ\"");
     if(rawMessages.indexOf("OK") == -1){
