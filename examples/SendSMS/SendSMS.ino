@@ -15,10 +15,6 @@
  */
 #include "ArduinoCellular.h"
 
-const char apn[]      = "internet";
-const char gprsUser[] = "";
-const char gprsPass[] = "";
-
 ArduinoCellular cellular = ArduinoCellular();
 
 void setup(){
@@ -26,11 +22,18 @@ void setup(){
     while (!Serial);
     delay(1000); // Give the serial monitor some time to start
 
+    // cellular.setDebugStream(Serial); // Uncomment this line to enable debug output
     cellular.begin();
-    String pinCode = "1234"; // If your SIM card has a PIN code, specify it here
+
+    String pinCode = ""; // If your SIM card has a PIN code, specify it here e.g. "1234"
+    if(pinCode.length() > 0 && !cellular.unlockSIM(pinCode)){
+        Serial.println("Failed to unlock SIM card.");
+        while(true); // Stop here
+    }
 
     Serial.println("Connecting to network...");
-    cellular.connect(apn, gprsUser, gprsPass, pinCode);
+    cellular.connect(); // APN settings are not required for sending SMS
+    Serial.println("Connected!");
 
     Serial.println("Sending SMS...");
     cellular.sendSMS("<INSERT_NUMBER_HERE>", "bleep bleep");

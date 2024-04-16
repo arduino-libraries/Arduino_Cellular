@@ -14,15 +14,13 @@ ArduinoCellular::ArduinoCellular() {
 }
 
 void ArduinoCellular::begin() {
-    // set sim slot
     modem.init();
-
  
     String modemInfo = this ->sendATCommand("I");
     if(modemInfo.indexOf("EC200A") > 0){
         this->model = ModemModel::EC200;
-    } else if (modemInfo.indexOf("EG95") > 0){
-        this->model = ModemModel::EG95;
+    } else if (modemInfo.indexOf("EG25") > 0){
+        this->model = ModemModel::EG25;
     } else {
         this->model = ModemModel::Unsupported;
     }
@@ -43,38 +41,55 @@ void ArduinoCellular::begin() {
 
 }
 
-bool ArduinoCellular::connect(String apn, String gprsUser, String gprsPass, String pin){
+bool ArduinoCellular::connect(String apn, String username, String password){
     SimStatus simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_LOCKED && pin.length() > 0){
-       unlockSIM(pin.c_str());
+
+    if(simStatus == SimStatus::SIM_LOCKED){
+        if(this->debugStream != nullptr){
+            this->debugStream->println("SIM locked, cannot connect to network.");
+        }
+       
+       return false;
     }
 
-    simStatus = getSimStatus();
-    if(simStatus == SimStatus::SIM_READY) {
-        if(awaitNetworkRegistration()){
-            if(connectToGPRS(apn.c_str(), gprsUser.c_str(), gprsPass.c_str())){
-                if(this->debugStream != nullptr){
-                    this->debugStream->println("Setting DNS...");
-                }
-                
-                auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
-                
-                if(this->debugStream != nullptr){
-                    this->debugStream->println(response);
-                }                
-                return true;
-            }
+    if(simStatus != SimStatus::SIM_READY) {
+        if(this->debugStream != nullptr){
+            this->debugStream->println("SIM not ready, cannot connect to network.");
+        }
+        return false;
+    }
+
+    if(!awaitNetworkRegistration()){    
+        return false;
+    }
+
+    if(apn.length() == 0){
+        if(this->debugStream != nullptr){
+            this->debugStream->println("No APN specified, not connecting to GPRS");
+        }
+        return true;       
+    }
+
+    if(connectToGPRS(apn.c_str(), username.c_str(), password.c_str())){
+        auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
+        
+        if(response.indexOf("OK") != -1){
+            return true;
         } else {
+            if(this->debugStream != nullptr){
+                this->debugStream->println("Failed to set DNS.");
+            }
             return false;
         }
+
     }
     
-    return false;    
+    return false;
 }
 
 
 Location ArduinoCellular::getGPSLocation(unsigned long timeout){
-    if (model == ModemModel::EG95){
+    if (model == ModemModel::EG25){
         float latitude = 0.00000;
         float longitude = 0.00000;
         unsigned long startTime = millis();
@@ -189,11 +204,11 @@ SimStatus ArduinoCellular::getSimStatus(){
     }
 }
 
-bool ArduinoCellular::unlockSIM(const char * pin){
+bool ArduinoCellular::unlockSIM(String pin){
     if(this->debugStream != nullptr){
         this->debugStream->println("Unlocking SIM...");
     }
-    return modem.simUnlock(pin); 
+    return modem.simUnlock(pin.c_str()); 
 }
 
 bool ArduinoCellular::awaitNetworkRegistration(){
@@ -214,30 +229,32 @@ bool ArduinoCellular::enableGPS(bool assisted){
         this->debugStream->println("Enabling GPS...");
     }
 
+    String response;
+
     if(assisted){
-        sendATCommand("AT+QGPSCFG=\"agpsposmode\",33488767");
+        response = sendATCommand("+QGPSCFG=\"agpsposmode\",33488767", 10000);
     } else {
-        sendATCommand("AT+QGPSCFG=\"agpsposmode\",8388608");
+        // Sets the 23rd bit to 1 to enable standalone GPS
+        response = sendATCommand("+QGPSCFG=\"agpsposmode\",8388608", 10000);
     }
 
-    //modem.sendAT(GF("+UTIME=1,1"));
-    //modem.waitResponse();
-    //modem.sendAT(GF("+UGPIOC=23,0,1"));
-
-    //modem.waitResponse();
+    if(response.indexOf("OK") == -1){
+        if(this->debugStream != nullptr){
+            this->debugStream->println("Failed to set GPS mode.");
+            this->debugStream->println("Response: " + response);
+        }
+        return false;
+    }
 
     return modem.enableGPS();
-    //delay(10000);
 }
 
-String ArduinoCellular::sendATCommand( char * command, unsigned long timeout){
-    String resp;
-    modem.sendAT(const_cast<char *>(command)); 
-    modem.waitResponse(timeout, resp);
-    return resp;
+String ArduinoCellular::sendATCommand(const char * command, unsigned long timeout){
+    String response;
+    modem.sendAT(command); 
+    modem.waitResponse(timeout, response);
+    return response;
 }
-
-
 
 Time parseTimestamp(const String &timestampStr) {
   int hour, minute, second, day, month, year, offset;
@@ -249,9 +266,9 @@ Time parseTimestamp(const String &timestampStr) {
 
   int firstSlashIndex = date.indexOf('/');
   int secondSlashIndex = date.lastIndexOf('/');
-  day = date.substring(0, firstSlashIndex).toInt();
+  year = date.substring(0, firstSlashIndex).toInt() + 2000;
   month = date.substring(firstSlashIndex + 1, secondSlashIndex).toInt();
-  year = date.substring(secondSlashIndex + 1).toInt() + 2000;
+  day = date.substring(secondSlashIndex + 1).toInt();
 
   int firstColonIndex = time.indexOf(':');
   int secondColonIndex = time.lastIndexOf(':');
@@ -263,6 +280,7 @@ Time parseTimestamp(const String &timestampStr) {
 
   return Time(year, month, day, hour, minute, second, offset);
 }
+
 // Parses a single SMS entry from the data
 SMS parseSMSEntry(const String& entry, const String& message) {
   SMS sms;
@@ -272,8 +290,12 @@ SMS parseSMSEntry(const String& entry, const String& message) {
   int fourthQuoteIndex = entry.indexOf('"', thirdQuoteIndex + 1);
   int commaIndexBeforeTimestamp = entry.lastIndexOf(',', entry.lastIndexOf(',') - 1);
 
+  String command = "+CMGL: ";
+  // Index is between "+CMGL: " and first "," symbol
+  sms.index = entry.substring(entry.indexOf(command) + command.length(), entry.indexOf(',')).toInt();
+
   // Extracting number and raw timestamp
-  sms.number = entry.substring(thirdQuoteIndex + 1, fourthQuoteIndex);
+  sms.sender = entry.substring(thirdQuoteIndex + 1, fourthQuoteIndex);
   String rawTimestamp = entry.substring(commaIndexBeforeTimestamp + 2, entry.indexOf('+', commaIndexBeforeTimestamp) + 3);
 
   // Parse the timestamp
@@ -293,13 +315,11 @@ std::vector<String> splitStringByLines(const String& input, char delimiter = '\n
         if (endIndex == -1)
             endIndex = input.length();
         String line = input.substring(startIndex, endIndex);
-        if(line.length() > 0 && line != "\r" && line != "\n" && line != "\r\n"){
-            // Remove trailing \r if it exists
-            if (line.endsWith("\r")) {
-                line.remove(line.length() - 1);
-            }
-            lines.push_back(line);
+        // Remove trailing \r if it exists
+        if (line.endsWith("\r")) {
+            line.remove(line.length() - 1);
         }
+        lines.push_back(line);
         startIndex = endIndex + 1;
     }
     return lines;
@@ -309,19 +329,33 @@ std::vector<String> splitStringByLines(const String& input, char delimiter = '\n
 std::vector<SMS> parseSMSData(const String& data) {
     std::vector<SMS> smsList = std::vector<SMS>();    
     std::vector<String> lines = splitStringByLines(data);
-    
-    // Remove last line if it's "OK"
-    if (lines.size() > 0 && lines[lines.size() - 1] == "OK") {
-        lines.pop_back();
+
+    // Remove first line if it's empty
+    if (lines.size() > 0 && lines[0] == "") {
+        lines.erase(lines.begin());
     }
 
-    for(int i = 0; i < lines.size(); i += 2){
+    // Remove last 2 lines if second to last line is "OK"
+    if (lines.size() >= 2 && lines.back() == "OK") {
+        lines.erase(lines.end() - 2, lines.end());
+    }
+    
+    for(int i = 0; i < lines.size(); i ++){
         if (lines[i].startsWith("+CMGL:")) {
+            String entry = lines[i];
             String message = "";
-            if(i + 1 < lines.size()){
-                message = lines[i + 1];
+            // Loop through the lines until the next +CMGL line and extract the message by concatenating the lines
+            for (int j = i + 1; j < lines.size(); j++) {
+                if (lines[j].startsWith("+CMGL:")) {
+                    i = j - 1;
+                    break;
+                }
+                message += lines[j] + "\n";
             }
-            SMS sms = parseSMSEntry(lines[i], message);
+            // Remove the trailing newline character from the message
+            message.remove(message.length() - 1);
+
+            SMS sms = parseSMSEntry(entry, message);
             smsList.push_back(sms);
         }
     }
@@ -349,6 +383,12 @@ std::vector<SMS> ArduinoCellular::getUnreadSMS(){
     } else {
         return parseSMSData(rawMessages);
     }
+}
+
+bool ArduinoCellular::deleteSMS(uint16_t index){
+    String command = "+CMGD=" + String(index);
+    String response = sendATCommand(const_cast<char *>(command.c_str()));
+    return response.indexOf("OK") != -1;
 }
 
 void ArduinoCellular::setDebugStream(Stream &stream){

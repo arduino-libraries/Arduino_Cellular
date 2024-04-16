@@ -27,7 +27,7 @@
 */
 enum ModemModel {
     EC200, /**< Quectel EC200 modem. */
-    EG95,  /**< Quectel EG95 modem. */
+    EG25,  /**< Quectel EG25 modem. */
     Unsupported /**< Unsupported modem model. */
 };
 
@@ -36,7 +36,8 @@ enum ModemModel {
  */
 class SMS {
     public:
-        String number; /**< The phone number associated with the SMS. */
+        int16_t index; /**< The index of the SMS message. */
+        String sender; /**< The phone number associated with the SMS. */
         String message; /**< The content of the SMS message. */
         Time timestamp; /**< The timestamp when the SMS was received. */
 
@@ -45,19 +46,21 @@ class SMS {
          * Initializes the number, message, and timestamp to empty values.
          */
         SMS() {
-            this->number = "";
+            this->index = -1;
+            this->sender = "";
             this->message = "";
             this->timestamp = Time();
         }
         
         /**
          * Constructor for SMS.
-         * @param number The phone number associated with the SMS.
+         * @param index The index of the SMS message.
+         * @param sender The phone number associated with the sender of the SMS.
          * @param message The content of the SMS message.
          * @param timestamp The timestamp when the SMS was received.
          */
-        SMS(String number, String message, Time timestamp) {
-            this->number = number;
+        SMS(int16_t index, String sender, String message, Time timestamp) {
+            this->sender = sender;
             this->message = message;
             this->timestamp = timestamp;
         }
@@ -92,14 +95,21 @@ class ArduinoCellular {
         void begin();
 
         /**
-         * @brief Connects to the network using the specified APN, GPRS username, and GPRS password.
-         * @param apn The Access Point Name.
-         * @param gprsUser The GPRS username.
-         * @param gprsPass The GPRS password.
+         * @brief Unlocks the SIM card using the specified PIN.
          * @param pin The SIM card PIN.
+         * @return True if the SIM card is unlocked, false otherwise.
+         */
+        bool unlockSIM(String pin);
+
+        /**
+         * @brief Registers with the cellular network and connects to the Internet
+         * if the APN, GPRS username, and GPRS password are provided.
+         * @param apn The Access Point Name.
+         * @param username The APN username.
+         * @param password The APN password.
          * @return True if the connection is successful, false otherwise.
          */
-        bool connect(String apn, String gprsUser, String gprsPass, String pin = "");
+        bool connect(String apn = "", String username = "", String password = "");
 
         /**
          * @brief Checks if the modem is registered on the network.
@@ -127,13 +137,6 @@ class ArduinoCellular {
          */
         Location getGPSLocation(unsigned long timeout = 60000);
         
-        /**
-         * @brief Gets the cellular location. (Blocking call) 
-         * @param timeout The timeout (In milliseconds) to wait for the cellular location. 
-         * @return The cellular location. If the location is not retrieved, the latitude and longitude will be 0.0.
-         */
-        Location getCellularLocation(unsigned long timeout = 10000);
-
         /**
          * @brief Gets the current time from the network.
          * @return The current time.
@@ -166,12 +169,20 @@ class ArduinoCellular {
         std::vector<SMS> getUnreadSMS();
 
         /**
+         * @brief Deletes an SMS message at the specified index.
+         *
+         * @param index The index of the SMS message to delete.
+         * @return True if the SMS message was successfully deleted, false otherwise.
+         */
+        bool deleteSMS(uint16_t index);
+
+        /**
          * @brief Sends an AT command to the modem and waits for a response, then returns the response.
          * @param command The AT command to send.
-         * @param timeout The timeout (In milliseconds) to wait for the response.
+         * @param timeout The timeout (In milliseconds) to wait for the response. Default is 1000ms.
          * @return The response from the modem.
          */
-        String sendATCommand(char * command, unsigned long timeout = 1000);
+        String sendATCommand(const char * command, unsigned long timeout = 1000);
 
 
         /**
@@ -232,13 +243,6 @@ class ArduinoCellular {
          * @return The SIM card status.
          */
         SimStatus getSimStatus();
-
-        /**
-         * @brief Unlocks the SIM card using the specified PIN.
-         * @param pin The SIM card PIN.
-         * @return True if the SIM card is unlocked, false otherwise.
-         */
-        bool unlockSIM(const char * pin);
 
         /**
          * @brief Waits for network registration. (Blocking call)
