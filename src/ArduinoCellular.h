@@ -124,9 +124,9 @@ class ArduinoCellular {
         bool isConnectedToInternet();
 
         /**
-         * @brief Enables or disables the GPS module.
+         * @brief Enables or disables the GPS functionality.
          * @param assisted True to enable assisted GPS, false to disable it. Assist GPS uses the network to get the GPS location faster, so cellular needs to be enabled. 
-         * @return True if the GPS module is enabled, false otherwise.
+         * @return True if GPS was enabled successfully, false otherwise.
          */
         bool enableGPS(bool assisted = false);
 
