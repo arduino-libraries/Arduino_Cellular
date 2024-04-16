@@ -27,9 +27,9 @@ It allows you to connect to the internet, send and receive SMS messages, and get
 1. Insert your Arduino 4G module to the [Arduino Portenta Mid Carrier](https://store.arduino.cc/collections/portenta-family/products/portenta-mid-carrier)
 2. Insert a valid SIM card either in the **PCIE_SIM** connector on the Portenta Mid Carrier
 3. Connect the 6 **SERIAL1** header pins to their corresponding pins on the **PCIE_BREAKOUT** header using jumpers
-![](https://raw.githubusercontent.com/arduino-libraries/Arduino_Cellular/main/extras/connection_img/header.jpg?token=GHSAT0AAAAAACNPRJPUBHNVP3J3KMRPUULUZQVDLKQ)
+![](./docs/header.jpg)
 4. Connect the **3V3 PCIE** pin to the **3V3 Buck** 
-![](https://raw.githubusercontent.com/arduino-libraries/Arduino_Cellular/main/extras/connection_img/buck.jpg?token=GHSAT0AAAAAACNPRJPUBUCALG2FUCDZ7AVCZQVDLJA)
+![](./docs/buck.jpg)
 5. Connect external power to the Mid Carrier, via the **VIN** (5V) because modems use a lot of power when connecting or getting a GPS location. Make sure your supply can handle around 3A. 
 6. Get the APN settings from your network operator and add them to the "arduino_secrets.h" file for each sketch
 ```cpp
