@@ -16,8 +16,8 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-| [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Default constructor. |
-| [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. |
+| [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Creates an instance of the [ArduinoCellular](#class_arduino_cellular) class. |
+| [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. This function must be called before using any other functions in the library. |
 | [`unlockSIM`](#class_arduino_cellular_1aa0be2795ff7b23c39ecef90d9906bbdf) | Unlocks the SIM card using the specified PIN. |
 | [`connect`](#class_arduino_cellular_1a7fb3c3e841b39c4faacef32cec6277b4) | Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
@@ -48,7 +48,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 ArduinoCellular()
 ```
 
-Default constructor.
+Creates an instance of the [ArduinoCellular](#class_arduino_cellular) class.
 
 <hr />
 
@@ -58,7 +58,7 @@ Default constructor.
 void begin()
 ```
 
-Initializes the modem.
+Initializes the modem. This function must be called before using any other functions in the library.
 
 <hr />
 
