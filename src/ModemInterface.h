@@ -11,6 +11,14 @@
 #define TINY_GSM_RX_BUFFER 1024
 #define TINY_GSM_MODEM_BG96
 
+#if defined(ARDUINO_PORTENTA_H7_M7) || defined(CORE_CM4)
+  #define PORTENTA_H7_MODEM_ON_PIN PG_3 // PG3 is the ON pin
+#elif defined(ARDUINO_PORTENTA_C33)
+  #define PORTENTA_C33_CTS_PIN 61
+  #define PORTENTA_C33_RTS_PIN 62
+  #define PORTENTA_C33_MODEM_ON_PIN 32
+#endif
+
 
 #include <Arduino.h>
 #include <StreamDebugger.h>
@@ -19,7 +27,7 @@
 
 /**
  * @class ModemInterface
- * @brief Represents the interface to the 4G modem module.
+ * @brief Represents the interface to the 4G modem module which extends the TinyGsmBG96 class.
  */
 class ModemInterface : public TinyGsmBG96 {
 public:
@@ -33,16 +41,20 @@ public:
   };
 
   /**
-   * @brief Initializes the modem interface.
+   * @brief Initializes the modem interface. (Overrides the init method in TinyGsmBG96)
    * @param pin The PIN code for the SIM card (optional).
    * @return True if initialization is successful, false otherwise.
    */
   bool init(const char* pin = NULL) {
+    // Power on the modem
     pinMode(powerPin, OUTPUT);
     digitalWrite(powerPin, HIGH);
     delay(1000);
+
     #ifdef DUMP_AT_COMMANDS
       #if defined(ARDUINO_PORTENTA_C33)
+        // On the C33 we have defined a UART object with software flow control on given pins in the .cpp file, we'll use extern to access and begin communication
+
         extern UART Serial1_FC;
         Serial1_FC.begin(115200);
       #endif
