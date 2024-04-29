@@ -16,8 +16,18 @@
 
 #include <Arduino.h>
 #include <vector>
-#include "ArduinoBearSSLConfig.h"
-#include <ArduinoBearSSL.h>
+
+#if defined __has_include
+  #if !__has_include (<ArduinoIoTCloud.h>)
+    #define ARDUINO_CELLULAR_BEARSSL
+  #endif
+#endif
+
+#if defined(ARDUINO_CELLULAR_BEARSSL)
+  #include "ArduinoBearSSLConfig.h"
+  #include <ArduinoBearSSL.h>
+#endif
+
 #include <ModemInterface.h>
 #include <TimeUtils.h>
 
@@ -206,7 +216,9 @@ class ArduinoCellular {
          * @brief Gets the Transport Layer Security (TLS) client. (OSI Layer 4)
          * @return The GSM client.
          */
+#if defined(ARDUINO_CELLULAR_BEARSSL)
         BearSSLClient getSecureNetworkClient();
+#endif
 
         /**
          * @brief Gets the HTTP client for the specified server and port.
