@@ -87,7 +87,7 @@ bool ArduinoCellular::connect(String apn, String username, String password){
 }
 
 
-Location ArduinoCellular::getGPSLocation(unsigned long timeout){
+Geolocation ArduinoCellular::getGPSLocation(unsigned long timeout){
     if (model == ModemModel::EG25){
         float latitude = 0.00000;
         float longitude = 0.00000;
@@ -98,7 +98,7 @@ Location ArduinoCellular::getGPSLocation(unsigned long timeout){
             delay(1000);
         }
         
-        Location loc;
+        Geolocation loc;
         loc.latitude = latitude;
         loc.longitude = longitude;
 
@@ -107,7 +107,7 @@ Location ArduinoCellular::getGPSLocation(unsigned long timeout){
         if(this->debugStream != nullptr){
             this->debugStream->println("Unsupported modem model");
         }
-        return Location();
+        return Geolocation();
     }
 }
 

@@ -68,10 +68,10 @@ class SMS {
 
 
 /**
- * @struct Location
+ * @struct Geolocation
  * @brief Represents a geographic location with latitude and longitude coordinates.
  */
-struct Location {
+struct Geolocation {
     float latitude; /**< The latitude coordinate of the location. */
     float longitude; /**< The longitude coordinate of the location. */
 };
@@ -136,7 +136,7 @@ class ArduinoCellular {
          * @param timeout The timeout (In milliseconds) to wait for the GPS location. 
          * @return The GPS location. If the location is not retrieved, the latitude and longitude will be 0.0.
          */
-        Location getGPSLocation(unsigned long timeout = 60000);
+        Geolocation getGPSLocation(unsigned long timeout = 60000);
         
         /**
          * @brief Gets the current time from the network.

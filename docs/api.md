@@ -6,7 +6,7 @@
 `class ` [`ModemInterface`](#class_modem_interface) | Represents the interface to the 4G modem module which extends the TinyGsmBG96 class.
 `class ` [`SMS`](#class_s_m_s) | Represents an [SMS](#class_s_m_s) message.
 `class ` [`Time`](#class_time) | Represents a point in time with year, month, day, hour, minute, second, and offset.
-`struct ` [`Location`](#struct_location) | Represents a geographic location with latitude and longitude coordinates.
+`struct ` [`Geolocation`](#struct_location) | Represents a geographic location with latitude and longitude coordinates.
 
 # class `ArduinoCellular` <a id="class_arduino_cellular" class="anchor"></a>
 
@@ -138,7 +138,7 @@ True if GPS was enabled successfully, false otherwise.
 ### `getGPSLocation` <a id="class_arduino_cellular_1aee57a2eec5be06172b2fb7cd574d9106" class="anchor"></a>
 
 ```cpp
-Location getGPSLocation(unsigned long timeout)
+CellularLocation getGPSLocation(unsigned long timeout)
 ```
 
 Gets the GPS location. (Blocking call)
@@ -824,7 +824,7 @@ Returns the timezone offset of the time.
 The timezone offset of the time.
 <hr />
 
-# struct `Location` <a id="struct_location" class="anchor"></a>
+# struct `Geolocation` <a id="struct_location" class="anchor"></a>
 
 Represents a geographic location with latitude and longitude coordinates.
 

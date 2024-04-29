@@ -28,7 +28,7 @@ void setup(){
 }
 
 void loop(){
-    Location location = cellular.getGPSLocation(10000);
+    Geolocation location = cellular.getGPSLocation(10000);
 
     if(location.latitude == 0.0 && location.longitude == 0.0){
         Serial.println("Failed to get GPS location");
