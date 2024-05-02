@@ -214,7 +214,7 @@ bool ArduinoCellular::awaitNetworkRegistration(){
     if(this->debugStream != nullptr){
         this->debugStream->println("Waiting for network registration...");
     }
-    while (!modem.waitForNetwork()) {
+    while (!modem.waitForNetwork(20000L)) {
         if(this->debugStream != nullptr){
             this->debugStream->print(".");
         }
