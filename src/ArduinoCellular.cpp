@@ -35,8 +35,9 @@ void ArduinoCellular::begin() {
     modem.sendAT("+CNMI=2,1,0,0,0");
     modem.waitResponse();
 
-
+#if defined(ARDUINO_CELLULAR_BEARSSL)
     ArduinoBearSSL.onGetTime(ArduinoCellular::getTime);
+#endif
 
 }
 
@@ -155,6 +156,7 @@ HttpClient ArduinoCellular::getHTTPClient(const char * server, const int port){
     return HttpClient(* new TinyGsmClient(modem), server, port);
 }
 
+#if defined(ARDUINO_CELLULAR_BEARSSL)
 HttpClient ArduinoCellular::getHTTPSClient(const char * server, const int port){
     return HttpClient(* new BearSSLClient(* new TinyGsmClient(modem)), server, port);
 }
@@ -162,6 +164,7 @@ HttpClient ArduinoCellular::getHTTPSClient(const char * server, const int port){
 BearSSLClient ArduinoCellular::getSecureNetworkClient(){
     return BearSSLClient(* new TinyGsmClient(modem));
 }
+#endif
 
 bool ArduinoCellular::isConnectedToOperator(){
     return modem.isNetworkConnected();
