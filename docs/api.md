@@ -27,8 +27,8 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`getCellularTime`](#class_arduino_cellular_1a6b3ce5485badff582584d539e790aff4) | Gets the current time from the network. |
 | [`getGPSTime`](#class_arduino_cellular_1a4aeb898c958e6eb001d606f0c7da8799) | Gets the current time from the GPS module. |
 | [`sendSMS`](#class_arduino_cellular_1a371aef1318857f0863f443eaeabf4ac2) | Sends an [SMS](#class_s_m_s) message to the specified number. |
-| [`getReadSMS`](#class_arduino_cellular_1a5da65683df86af75590c7a68766236ee) | Gets the list of read [SMS](#class_s_m_s) messages. |
-| [`getUnreadSMS`](#class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5) | Gets the list of unread [SMS](#class_s_m_s) messages. |
+| [`getReadSMS`](#class_arduino_cellular_1ae032c4e4cade6579a2c1edfe53d2ff2b) | Gets the list of read [SMS](#class_s_m_s) messages. |
+| [`getUnreadSMS`](#class_arduino_cellular_1a212513654884058947a2a4d332f6ccfc) | Gets the list of unread [SMS](#class_s_m_s) messages. |
 | [`deleteSMS`](#class_arduino_cellular_1abe4337f0bc8c486a076011309120ace1) | Deletes an [SMS](#class_s_m_s) message at the specified index. |
 | [`sendATCommand`](#class_arduino_cellular_1a58a3e3713af0c01ad1075a2509c6874d) | Sends an AT command to the modem and waits for a response, then returns the response. |
 | [`sendUSSDCommand`](#class_arduino_cellular_1a6886aec5850836ea8e8f135d4e5632ab) | Sends a USSD command to the network operator and waits for a response. |
@@ -188,7 +188,7 @@ Sends an [SMS](#class_s_m_s) message to the specified number.
 * `message` The message to send.
 <hr />
 
-### `getReadSMS` <a id="class_arduino_cellular_1a5da65683df86af75590c7a68766236ee" class="anchor"></a>
+### `getReadSMS` <a id="class_arduino_cellular_1ae032c4e4cade6579a2c1edfe53d2ff2b" class="anchor"></a>
 
 ```cpp
 std::vector< SMS > getReadSMS()
@@ -200,7 +200,7 @@ Gets the list of read [SMS](#class_s_m_s) messages.
 A vector of [SMS](#class_s_m_s) messages.
 <hr />
 
-### `getUnreadSMS` <a id="class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5" class="anchor"></a>
+### `getUnreadSMS` <a id="class_arduino_cellular_1a212513654884058947a2a4d332f6ccfc" class="anchor"></a>
 
 ```cpp
 std::vector< SMS > getUnreadSMS()
