@@ -1,6 +1,9 @@
 
 
 #include "ArduinoCellular.h"
+#if defined(ARDUINO_ARCH_MBED)
+  #include "Watchdog.h"
+#endif
 
 unsigned long ArduinoCellular::getTime() {
     int year, month, day, hour, minute, second;
@@ -217,12 +220,17 @@ bool ArduinoCellular::awaitNetworkRegistration(){
     if(this->debugStream != nullptr){
         this->debugStream->println("Waiting for network registration...");
     }
-    while (!modem.waitForNetwork()) {
+    while (!modem.waitForNetwork(waitForNetworkTimeout)) {
         if(this->debugStream != nullptr){
             this->debugStream->print(".");
         }
+        #if defined(ARDUINO_ARCH_MBED)
+            if(mbed::Watchdog::get_instance().is_running()) {
+                mbed::Watchdog::get_instance().kick();
+            }
+        #endif
         delay(2000);
-    } 
+    }
     return true;
 }
 
