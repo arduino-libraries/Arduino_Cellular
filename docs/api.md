@@ -6,7 +6,7 @@
 `class ` [`ModemInterface`](#class_modem_interface) | Represents the interface to the 4G modem module which extends the TinyGsmBG96 class.
 `class ` [`SMS`](#class_s_m_s) | Represents an [SMS](#class_s_m_s) message.
 `class ` [`Time`](#class_time) | Represents a point in time with year, month, day, hour, minute, second, and offset.
-`struct ` [`Geolocation`](#struct_location) | Represents a geographic location with latitude and longitude coordinates.
+`struct ` [`Geolocation`](#struct_geolocation) | Represents a geographic location with latitude and longitude coordinates.
 
 # class `ArduinoCellular` <a id="class_arduino_cellular" class="anchor"></a>
 
@@ -23,7 +23,7 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
 | [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS functionality. |
-| [`getGPSLocation`](#class_arduino_cellular_1aee57a2eec5be06172b2fb7cd574d9106) | Gets the GPS location. (Blocking call) |
+| [`getGPSLocation`](#class_arduino_cellular_1a41225f52d059df173f028ecd0c039ec3) | Gets the GPS location. (Blocking call) |
 | [`getCellularTime`](#class_arduino_cellular_1a6b3ce5485badff582584d539e790aff4) | Gets the current time from the network. |
 | [`getGPSTime`](#class_arduino_cellular_1a4aeb898c958e6eb001d606f0c7da8799) | Gets the current time from the GPS module. |
 | [`sendSMS`](#class_arduino_cellular_1a371aef1318857f0863f443eaeabf4ac2) | Sends an [SMS](#class_s_m_s) message to the specified number. |
@@ -135,10 +135,10 @@ Enables or disables the GPS functionality.
 True if GPS was enabled successfully, false otherwise.
 <hr />
 
-### `getGPSLocation` <a id="class_arduino_cellular_1aee57a2eec5be06172b2fb7cd574d9106" class="anchor"></a>
+### `getGPSLocation` <a id="class_arduino_cellular_1a41225f52d059df173f028ecd0c039ec3" class="anchor"></a>
 
 ```cpp
-CellularLocation getGPSLocation(unsigned long timeout)
+Geolocation getGPSLocation(unsigned long timeout)
 ```
 
 Gets the GPS location. (Blocking call)
@@ -824,7 +824,7 @@ Returns the timezone offset of the time.
 The timezone offset of the time.
 <hr />
 
-# struct `Geolocation` <a id="struct_location" class="anchor"></a>
+# struct `Geolocation` <a id="struct_geolocation" class="anchor"></a>
 
 Represents a geographic location with latitude and longitude coordinates.
 
@@ -832,12 +832,12 @@ Represents a geographic location with latitude and longitude coordinates.
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-| [`latitude`](#struct_location_1a194bf3edf130d2a4bf281720e7d01409) | The latitude coordinate of the location. |
-| [`longitude`](#struct_location_1ae36169ef2dfcad63e26b492a6a82b990) | The longitude coordinate of the location. |
+| [`latitude`](#struct_geolocation_1a86c7bea43545766d1da49a566b579846) | The latitude coordinate of the location. |
+| [`longitude`](#struct_geolocation_1a6df627e2a4f3566e7a40cec69c94fd06) | The longitude coordinate of the location. |
 
 ## Members
 
-### `latitude` <a id="struct_location_1a194bf3edf130d2a4bf281720e7d01409" class="anchor"></a>
+### `latitude` <a id="struct_geolocation_1a86c7bea43545766d1da49a566b579846" class="anchor"></a>
 
 ```cpp
 float latitude
@@ -846,7 +846,7 @@ float latitude
 The latitude coordinate of the location.
 <hr />
 
-### `longitude` <a id="struct_location_1ae36169ef2dfcad63e26b492a6a82b990" class="anchor"></a>
+### `longitude` <a id="struct_geolocation_1a6df627e2a4f3566e7a40cec69c94fd06" class="anchor"></a>
 
 ```cpp
 float longitude
