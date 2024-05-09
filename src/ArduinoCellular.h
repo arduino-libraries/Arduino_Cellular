@@ -277,6 +277,8 @@ class ArduinoCellular {
         Stream* debugStream = nullptr; /**< The stream to be used for printing debugging messages. */
 
         static unsigned long getTime(); /** Callback for getting the current time as an unix timestamp. */
+
+        static constexpr unsigned long waitForNetworkTimeout = 20000L; /**< Maximum wait time for network registration (In milliseconds). */
 };
 
 
