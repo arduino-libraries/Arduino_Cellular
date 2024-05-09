@@ -28,7 +28,7 @@ void setup(){
 }
 
 void loop(){
-    Location location = cellular.getGPSLocation();
+    Geolocation location = cellular.getGPSLocation();
     Serial.println("GPS Location:");
     Serial.print("* Latitude: "); Serial.println(location.latitude, 6);
     Serial.print("* Longitude: "); Serial.println(location.longitude, 6);
