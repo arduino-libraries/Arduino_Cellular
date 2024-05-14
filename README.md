@@ -33,6 +33,8 @@ It allows you to connect to the internet, send and receive SMS messages, and get
     | RTS (Pin 3)            | RX_N (Pin 5)        |
     | CTS (Pin 4)            | RX_P (Pin 7)        |
     | mPCIE_GPIO_RST (Pin 5) | mPCIE_RST (Pin 9)   |
+    
+    <img src="./docs/Arduino_Portenta_Mid_Carrier_PortentaH7_and_PCIEBreakout_Pins.png" alt="Portenta Mid Carrier with Portenta H7 and PCIE Breakout Pin Configuration" width="400"/>
 
 3. On J9, using jumpers connect the following pins:
     | Source (J9)      | Buck Converter (J9) |
@@ -40,17 +42,23 @@ It allows you to connect to the internet, send and receive SMS messages, and get
     | 3V3 PCIE (Pin 1) | 3V3 BUCK (Pin 3)    |
     | OUT VCC (Pin 2)  | 3V3 BUCK EN (Pin 4) |
 
+    <img src="./docs/Arduino_Portenta_Mid_Carrier_SIM_and_Power_Pins.png" alt="Portenta Mid Carrier SIM and Power Pin Configuration" width="400"/>
+
 4. Insert the [Arduino Pro 4G Module](https://docs.arduino.cc/hardware/pro-4g-module) in the Arduino Portenta Mid Carrier.
 
-5. Screw one black post with a white nut from under the Portenta Mid Carrier. Using another black post, screw the board to the post. Place two washers on top, and one underneath the Pro 4G Module. So that the board is fixed to the post snuggly and horizontally. 
+5. Screw one black post with a white nut from under the Portenta Mid Carrier. Using another black post, screw the board to the post. Place two washers on top, and one underneath the Pro 4G Module. So that the board is fixed to the post snuggly and horizontally.
 
 6. (EMEA and GNSS variants) Connect the cellular antenna (flat antenna in [Arduino Pro 4G Module Antennas Kit](https://store.arduino.cc/products/4g-module-antenna)) to the left microUFL connector marked MAIN.
 
 7. (PRO 4G GNSS only) Connect the GNSS antenna (square antenna in [Arduino Pro 4G Module Antennas Kit](https://store.arduino.cc/products/4g-module-antenna)) to the middle microUFL connector marked GNSS.
 
+    <img src="./docs/Arduino_Portenta_Mid_Carrier_GNSS_with_GNSS_MAIN_Antennas.png" alt="Portenta Mid Carrier with Pro 4G Module GNSS with both the MAIN and GNSS antennas connected" width="400"/>
+
 8. Insert a [Portenta C33](https://docs.arduino.cc/hardware/portenta-c33) or [Portenta H7](https://docs.arduino.cc/hardware/portenta-h7) Board into the marked location. The USB-C port of the Portenta board should be next to the Ethernet port on the Mid Carrier.
 
-9. Insert a Terminal Block 2-pin > DC female adapter into the screw terminal (J4). Ensure that the negative (-) pin is connected to GND.
+9.  Insert a Terminal Block 2-pin > DC female adapter into the screw terminal (J4). Ensure that the negative (-) pin is connected to GND.
+
+    <img src="./docs/Arduino_Portenta_Mid_Carrier_PortentaC33_4GPRO_GNSS_All_Antennas.png" alt="Portenta Mid Carrier with Portenta C33 and Pro 4G Module GNSS with all antennas connected" width="400"/>
 
 10. Use a 5V adapter that can output at least 3A and connect it to the DC female adapter.
 
