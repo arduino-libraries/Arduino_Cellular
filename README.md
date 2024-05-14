@@ -40,9 +40,9 @@ It allows you to connect to the internet, send and receive SMS messages, and get
     | 3V3 PCIE (Pin 1) | 3V3 BUCK (Pin 3)    |
     | OUT VCC (Pin 2)  | 3V3 BUCK EN (Pin 4) |
 
-4. Insert the [Arduino Pro 4G Module](https://docs.arduino.cc/hardware/pro-4g-module) in the Arduino Mid Carrier.
+4. Insert the [Arduino Pro 4G Module](https://docs.arduino.cc/hardware/pro-4g-module) in the Arduino Portenta Mid Carrier.
 
-5. Screw one black post with a white nut from under the Mid Carrier. Using another black post, screw the board to the post. Place two washers on top, and one underneath the Pro 4G Module. So that the board is fixed to the post snuggly and horizontally. 
+5. Screw one black post with a white nut from under the Portenta Mid Carrier. Using another black post, screw the board to the post. Place two washers on top, and one underneath the Pro 4G Module. So that the board is fixed to the post snuggly and horizontally. 
 
 6. (EMEA and GNSS variants) Connect the cellular antenna (flat antenna in [Arduino Pro 4G Module Antennas Kit](https://store.arduino.cc/products/4g-module-antenna)) to the left microUFL connector marked MAIN.
 
@@ -58,8 +58,9 @@ It allows you to connect to the internet, send and receive SMS messages, and get
 
 12. Install the `Arduino_Cellular` library and its dependencies
 
-13. Obtain the APN settings from your network operator and add them to the `arduino_secrets.h` file for each sketch. For example:
+13. Obtain the APN (Access Point Name) settings from your network operator and add them to the `arduino_secrets.h` file for each sketch. For example:
     ```cpp
+    #define SECRET_PINNUMBER     "" // replace with your SIM card PIN
     #define SECRET_GPRS_APN      "services.telenor.se" // replace with your GPRS APN
     #define SECRET_GPRS_LOGIN    ""    // replace with your GPRS login
     #define SECRET_GPRS_PASSWORD "" // replace with your GPRS password
