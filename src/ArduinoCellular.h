@@ -70,6 +70,7 @@ class SMS {
          * @param timestamp The timestamp when the SMS was received.
          */
         SMS(int16_t index, String sender, String message, Time timestamp) {
+            this->index = index;
             this->sender = sender;
             this->message = message;
             this->timestamp = timestamp;
