@@ -124,6 +124,7 @@ Time ArduinoCellular::getGPSTime(){
 Time ArduinoCellular::getCellularTime(){
     int year, month, day, hour, minute, second;
     float tz;
+    modem.NTPServerSync();
     modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
     return Time(year, month, day, hour, minute, second);
 }
