@@ -137,6 +137,8 @@ Time ArduinoCellular::getCellularTime(){
 
 
 void ArduinoCellular::sendSMS(String number, String message){
+    modem.sendAT("+CMGF=1"); 
+    modem.waitResponse(1000);
     modem.sendAT(GF("+CMGS=\""), number, GF("\""));
     if (modem.waitResponse(GF(">")) != 1) { }
     modem.stream->print(message);  // Actually send the message
