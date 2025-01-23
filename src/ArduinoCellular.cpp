@@ -44,7 +44,12 @@ void ArduinoCellular::begin() {
 
 }
 
-bool ArduinoCellular::connect(String apn, String username, String password){
+bool ArduinoCellular::connect(String apn, bool waitForever) {
+    connect(apn,String(""),String(""), waitForever);
+}
+
+
+bool ArduinoCellular::connect(String apn, String username, String password, bool waitForever){
     SimStatus simStatus = getSimStatus();
 
     if(simStatus == SimStatus::SIM_LOCKED){
@@ -62,7 +67,7 @@ bool ArduinoCellular::connect(String apn, String username, String password){
         return false;
     }
 
-    if(!awaitNetworkRegistration()){    
+    if(!awaitNetworkRegistration(waitForever)){
         return false;
     }
 
@@ -225,11 +230,16 @@ bool ArduinoCellular::unlockSIM(String pin){
     return modem.simUnlock(pin.c_str()); 
 }
 
-bool ArduinoCellular::awaitNetworkRegistration(){
+bool ArduinoCellular::awaitNetworkRegistration(bool waitForever){
     if(this->debugStream != nullptr){
         this->debugStream->println("Waiting for network registration...");
     }
     while (!modem.waitForNetwork(waitForNetworkTimeout)) {
+        
+        if(!waitForever) {
+            return false;
+        }
+
         if(this->debugStream != nullptr){
             this->debugStream->print(".");
         }
