@@ -259,14 +259,15 @@ class ArduinoCellular {
          */
         void setDebugStream(Stream& stream);
 
-    private:
-        bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
-        
-        /**
+		/**
          * @brief Gets the SIM card status.
          * @return The SIM card status.
          */
         SimStatus getSimStatus();
+
+    private:
+        bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
+        
 
         /**
          * @brief Waits for network registration. (Blocking call)
