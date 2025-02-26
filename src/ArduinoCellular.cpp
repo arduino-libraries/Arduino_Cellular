@@ -205,13 +205,13 @@ SimStatus ArduinoCellular::getSimStatus(){
         this->debugStream->println("SIM Status: " + String(simStatus));
     }
 
-    if (modem.getSimStatus() == 0) {
+    if (simStatus == 0) {
         return SimStatus::SIM_ERROR;
-    } else if (modem.getSimStatus() == 1) {
+    } else if (simStatus == 1) {
         return SimStatus::SIM_READY;
-    } else if (modem.getSimStatus() == 2) {
+    } else if (simStatus == 2) {
         return SimStatus::SIM_LOCKED;
-    } else if (modem.getSimStatus() == 3) {
+    } else if (simStatus == 3) {
         return SimStatus::SIM_ANTITHEFT_LOCKED;
     } else {
         return SimStatus::SIM_ERROR;
@@ -219,10 +219,18 @@ SimStatus ArduinoCellular::getSimStatus(){
 }
 
 bool ArduinoCellular::unlockSIM(String pin){
-    if(this->debugStream != nullptr){
-        this->debugStream->println("Unlocking SIM...");
+    int simStatus = modem.getSimStatus();
+    if(simStatus == SIM_LOCKED) {
+        if(this->debugStream != nullptr){
+            this->debugStream->println("Unlocking SIM...");
+        }
+        return modem.simUnlock(pin.c_str());
     }
-    return modem.simUnlock(pin.c_str()); 
+    else if(simStatus == SIM_ERROR || simStatus == SIM_ANTITHEFT_LOCKED) {
+        return false;
+    }
+    /* SIM is ready */
+    return true;
 }
 
 bool ArduinoCellular::awaitNetworkRegistration(){
