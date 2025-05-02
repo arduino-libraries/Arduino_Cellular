@@ -127,7 +127,7 @@ class ArduinoCellular {
         /**
          * @brief same as previous, username and password are empty
          */
-        bool connect(String apn, bool waitForever);
+        bool connect(String apn, bool waitForever = true);
 
         /**
          * @brief Checks if the modem is registered on the network.
