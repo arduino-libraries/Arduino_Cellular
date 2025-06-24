@@ -3,13 +3,17 @@
 [![Arduino Lint](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/arduino-lint.yml) [![Compile Examples](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/spell-check.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/spell-check.yml) [![Sync Labels](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/sync-labels.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/sync-labels.yml) [![Render Documentation](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/render-documentation.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_Cellular/actions/workflows/render-documentation.yml)
 
 
-This library provides a toolkit for interacting with the official Arduino 4G Modules ([EMEA](https://store.arduino.cc/products/4g-module-emea) and [Global Versions](https://store.arduino.cc/products/4g-module-global)). 
-It allows you to connect to the internet, send and receive SMS messages, and get location from the cellular network or GPS. 
+This library provides a toolkit for interacting with the official Arduino 4G Modules ([EMEA](https://store.arduino.cc/products/4g-module-emea) and [Global Versions](https://store.arduino.cc/products/4g-module-global)) on using the [Portenta Mid Carrier](https://store.arduino.cc/products/portenta-mid-carrier) and Portenta H7 or C33 boards. It allows you to connect to the internet, send and receive SMS messages, and get location from the cellular network or GPS. 
+
+
+> [!NOTE]  
+> GPS/GNSS functionality is only supported on the [Global Versions](https://store.arduino.cc/products/4g-module-global) version of the modem.
+
 
 ## Examples
 * [DeleteSMS](examples/DeleteSMS) - Example that shows how to delete SMS.
-* [GetLocation](examples/GetLocation) - Shows how to get the current GPS location.
-* [GetTime](examples/GetTime) - Use GPS to acquire the time of the device.
+* [GetLocation](examples/GetLocation) - Shows how to get the current GPS location. (Supported on the [Global Version](https://store.arduino.cc/products/4g-module-global))
+* [GetTime](examples/GetTime) - Use GPS to acquire the time of the device. (Supported on the [Global Version](https://store.arduino.cc/products/4g-module-global))
 * [HTTPClient](examples/HTTPClient) - Example of using this library together with [ArduinoHttpClient]() to connect to a web server
 * [HTTPSClient](examples/HTTPSClient) - Example of using this library together with [ArduinoHttpClient]() that uses [BearSSL]() under the hood to create a secure connection to a web server
 * [ModemTerminal](examples/ModemTerminal) - A handy example for debugging and Testing AT commands 
@@ -19,7 +23,7 @@ It allows you to connect to the internet, send and receive SMS messages, and get
 ## ✨ Features
 * Fast 4G connection to the internet
 * Secure SSL connections with BearSSL
-* Get location using GPS or GSM
+* Get location using GPS or GSM 
 * Synchronise time with the cell provider
 * Send and Receive SMS Messages
 
@@ -77,6 +81,15 @@ It allows you to connect to the internet, send and receive SMS messages, and get
 14. Upload sketch to the Portenta board. Enjoy!
 
 
+## Compatibility
+* This library is designed to be used with the the official Arduino 4G Modules [EMEA](https://store.arduino.cc/products/4g-module-emea) and [Global Versions](https://store.arduino.cc/products/4g-module-global)
+* GPS/GNSS functionality is only supported on the [Global Version](https://store.arduino.cc/products/4g-module-global)
+* This library compiles on the [Portenta C33](https://store.arduino.cc/products/portenta-c33?), [Portenta H7](https://store.arduino.cc/products/portenta-h7), [H7 Lite](https://store.arduino.cc/products/portenta-h7-lite), and [H7 Lite Connected](https://store.arduino.cc/products/portenta-h7-lite-connected) used in conjunction with the [Portenta Mid Carrier](https://store.arduino.cc/products/portenta-mid-carrier). Any other configuration is not supported by this library.
+* Even though these Modules are PCIE devices and would physically fit on the [Portenta Max Carrier](https://store.arduino.cc/products/portenta-max-carrier), we do not support this configuration with the Arduino_Cellular library. But the Portenta Max Carrier has a SARA-R412M-02B cellular modem already.
+* None of the library examples compile with the Portenta X8. The X8 handles the cellular connectivity in the Yocto Linux layer.
+
 ## 📖 Documentation
 
 For more information about this library please read the documentation [here](./docs).
+
+
