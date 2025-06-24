@@ -21,9 +21,8 @@ jobs:
   render-docs:
     permissions:
       contents: write
-    uses: sebromero/render-docs-github-action/.github/workflows/render-docs.yml@main
+    uses: arduino/render-docs-github-action/.github/workflows/render-docs.yml@main
     with:
       source-path: './src'
       target-path: './docs/api.md'
       fail-on-warnings: true
-      commit: ${{ github.event_name != 'pull_request' }} # Only commit changes if not a PR
