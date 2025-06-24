@@ -124,8 +124,12 @@ class ArduinoCellular {
          */
         bool connect(String apn = "", String username = "", String password = "", bool waitForever = true);
         
-        /**
-         * @brief same as previous, username and password are empty
+       /**
+         * @brief Registers with the cellular network and connects to the Internet
+         * if the APN, GPRS username, and GPRS password are provided.
+         * @param apn The Access Point Name.
+         * @param waitForever The function does not return unless a connection has been established
+         * @return True if the connection is successful, false otherwise.
          */
         bool connect(String apn, bool waitForever = true);
 
