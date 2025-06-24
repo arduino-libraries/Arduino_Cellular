@@ -119,9 +119,15 @@ class ArduinoCellular {
          * @param apn The Access Point Name.
          * @param username The APN username.
          * @param password The APN password.
+         * @param waitForever The function does not return unless a connection has been established
          * @return True if the connection is successful, false otherwise.
          */
-        bool connect(String apn = "", String username = "", String password = "");
+        bool connect(String apn = "", String username = "", String password = "", bool waitForever = true);
+        
+        /**
+         * @brief same as previous, username and password are empty
+         */
+        bool connect(String apn, bool waitForever = true);
 
         /**
          * @brief Checks if the modem is registered on the network.
@@ -259,20 +265,22 @@ class ArduinoCellular {
          */
         void setDebugStream(Stream& stream);
 
-    private:
-        bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
-        
-        /**
+		/**
          * @brief Gets the SIM card status.
          * @return The SIM card status.
          */
         SimStatus getSimStatus();
 
+    private:
+        bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
+        
+
         /**
          * @brief Waits for network registration. (Blocking call)
+         * @param waitForever if true the function does not return until a connection has been established
          * @return True if the network registration is successful, false otherwise.
          */
-        bool awaitNetworkRegistration();
+        bool awaitNetworkRegistration(bool waitForever);
 
         /**
          * @brief Gets the GPS location. (Blocking call)
