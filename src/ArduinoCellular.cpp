@@ -8,7 +8,7 @@
 unsigned long ArduinoCellular::getTime() {
     int year, month, day, hour, minute, second;
     float tz;
-    modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    modem.getNetworkUTCTime(&year, &month, &day, &hour, &minute, &second, &tz);
     return Time(year, month, day, hour, minute, second).getUNIXTimestamp();
 }
 
