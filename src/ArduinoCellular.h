@@ -276,8 +276,7 @@ class ArduinoCellular {
         SimStatus getSimStatus();
 
     private:
-        bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
-        
+        bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass, bool waitForever = true);
 
         /**
          * @brief Waits for network registration. (Blocking call)
