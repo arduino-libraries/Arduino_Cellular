@@ -163,7 +163,7 @@ class ArduinoCellular {
          * @brief Gets the current time from the network.
          * @return The current time.
          */
-        Time getCellularTime(bool localTime = true);
+        Time getCellularTime(bool localTime = true, bool forceNTPSync = false);
 
         /**
          * @brief Gets the current time from the GPS module.
@@ -277,7 +277,6 @@ class ArduinoCellular {
 
     private:
         bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
-        
 
         /**
          * @brief Waits for network registration. (Blocking call)
@@ -304,6 +303,8 @@ class ArduinoCellular {
         static unsigned long getTime(); /** Callback for getting the current time as an unix timestamp. */
 
         static constexpr unsigned long waitForNetworkTimeout = 20000L; /**< Maximum wait time for network registration (In milliseconds). */
+
+        bool needNTPSync = true; /**< Flag to indicate if NTP synchronization is needed. */
 };
 
 
