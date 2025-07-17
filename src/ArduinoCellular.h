@@ -163,7 +163,7 @@ class ArduinoCellular {
          * @brief Gets the current time from the network.
          * @return The current time.
          */
-        Time getCellularTime();
+        Time getCellularTime(bool localTime = true);
 
         /**
          * @brief Gets the current time from the GPS module.

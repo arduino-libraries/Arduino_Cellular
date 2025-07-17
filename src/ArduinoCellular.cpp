@@ -126,7 +126,7 @@ Time ArduinoCellular::getGPSTime(){
     return Time(year, month, day, hour, minute, second);
 }
 
-Time ArduinoCellular::getCellularTime(){
+Time ArduinoCellular::getCellularTime(bool localTime){
     int year = 1970;
     int month = 1;
     int day = 1;
@@ -135,7 +135,11 @@ Time ArduinoCellular::getCellularTime(){
     int second = 0;
     float tz;
     if (modem.NTPServerSync() == 0) {
-      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+      if (localTime) {
+        modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+      } else {
+        modem.getNetworkUTCTime(&year, &month, &day, &hour, &minute, &second, &tz);
+      }
     }
     return Time(year, month, day, hour, minute, second);
 }
