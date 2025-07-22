@@ -153,9 +153,9 @@ Time ArduinoCellular::getGPSTime(){
     return Time(year, month, day, hour, minute, second);
 }
 
-Time ArduinoCellular::getCellularTime(){
+Time ArduinoCellular::getCellularTime(bool localTime){
     // Get the current time from the network as localtime
-    return getTimeStruct(true);
+    return getTimeStruct(localTime);
 }
 
 bool ArduinoCellular::syncCellularTime(){

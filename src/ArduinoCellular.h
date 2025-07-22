@@ -161,9 +161,10 @@ class ArduinoCellular {
 
         /**
          * @brief Gets the current time from the network.
+         * @param localTime If true, the time will be converted to local time. Default is true.
          * @return The current time.
          */
-        Time getCellularTime();
+        Time getCellularTime(bool localTime = true);
 
         /**
          * @brief Sync the modem time using NTP service.
