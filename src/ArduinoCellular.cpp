@@ -158,6 +158,10 @@ Time ArduinoCellular::getCellularTime(){
     return getTimeStruct(true);
 }
 
+bool ArduinoCellular::syncCellularTime(){
+    // Sync the time with the network NTP service
+    return syncNTPServer(true) == 0 ? true : false;
+}
 
 void ArduinoCellular::sendSMS(String number, String message){
     modem.sendAT("+CMGF=1"); 

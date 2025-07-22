@@ -158,12 +158,18 @@ class ArduinoCellular {
          * @return The GPS location. If the location is not retrieved, the latitude and longitude will be 0.0.
          */
         Geolocation getGPSLocation(unsigned long timeout = 60000);
-        
+
         /**
          * @brief Gets the current time from the network.
          * @return The current time.
          */
         Time getCellularTime();
+
+        /**
+         * @brief Sync the modem time using NTP service.
+         * @return True  on success false otherwise.
+         */
+        bool syncCellularTime();
 
         /**
          * @brief Gets the current time from the GPS module.
