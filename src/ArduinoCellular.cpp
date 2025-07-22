@@ -12,6 +12,18 @@ unsigned long ArduinoCellular::getTime() {
     return Time(year, month, day, hour, minute, second).getUNIXTimestamp();
 }
 
+int ArduinoCellular::syncNTPServer(bool forceNTPSync) {
+    static bool needNTPSync = true;
+    if(!needNTPSync && !forceNTPSync) {
+        return 0;
+    }
+    if(modem.NTPServerSync() == 0) {
+        needNTPSync = false;
+        return 0;
+    }
+    return -1;
+}
+
 ArduinoCellular::ArduinoCellular() {
 }
 
@@ -134,7 +146,7 @@ Time ArduinoCellular::getCellularTime(){
     int minute = 0;
     int second = 0;
     float tz;
-    if (modem.NTPServerSync() == 0) {
+    if (syncNTPServer() == 0) {
       modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
     }
     return Time(year, month, day, hour, minute, second);
