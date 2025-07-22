@@ -6,9 +6,16 @@
 #endif
 
 unsigned long ArduinoCellular::getTime() {
-    int year, month, day, hour, minute, second;
+    int year = 1970;
+    int month = 1;
+    int day = 1;
+    int hour = 0;
+    int minute = 0;
+    int second = 0;
     float tz;
-    modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    if (syncNTPServer() == 0) {
+      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    }
     return Time(year, month, day, hour, minute, second).getUNIXTimestamp();
 }
 
