@@ -5,7 +5,7 @@
   #include "Watchdog.h"
 #endif
 
-unsigned long ArduinoCellular::getTime() {
+Time ArduinoCellular::getTimeStruct(bool localTime) {
     int year = 1970;
     int month = 1;
     int day = 1;
@@ -14,9 +14,17 @@ unsigned long ArduinoCellular::getTime() {
     int second = 0;
     float tz;
     if (syncNTPServer() == 0) {
-      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+        if (localTime) {
+            modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+        } else {
+            modem.getNetworkUTCTime(&year, &month, &day, &hour, &minute, &second, &tz);
+        }
     }
-    return Time(year, month, day, hour, minute, second).getUNIXTimestamp();
+    return Time(year, month, day, hour, minute, second);
+}
+
+unsigned long ArduinoCellular::getTime() {
+    return getTimeStruct().getUNIXTimestamp();
 }
 
 int ArduinoCellular::syncNTPServer(bool forceNTPSync) {
@@ -146,17 +154,8 @@ Time ArduinoCellular::getGPSTime(){
 }
 
 Time ArduinoCellular::getCellularTime(){
-    int year = 1970;
-    int month = 1;
-    int day = 1;
-    int hour = 0;
-    int minute = 0;
-    int second = 0;
-    float tz;
-    if (syncNTPServer() == 0) {
-      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
-    }
-    return Time(year, month, day, hour, minute, second);
+    // Get the current time from the network as localtime
+    return getTimeStruct(true);
 }
 
 
