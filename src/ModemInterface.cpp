@@ -32,4 +32,6 @@
     __attribute__ ((init_priority (101))) ModemInterface modem(Serial1, PinNameToIndex(PORTENTA_H7_MODEM_ON_PIN));
     #endif
 
+#else
+    #error "Unsupported board. Please define the modem interface for your board."
 #endif
