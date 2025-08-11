@@ -1,6 +1,8 @@
 
 
 #include "ArduinoCellular.h"
+#include "ManagedTinyGsmClient.h"
+
 #if defined(ARDUINO_ARCH_MBED)
   #include "Watchdog.h"
 #endif

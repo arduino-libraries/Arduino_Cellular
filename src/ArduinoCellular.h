@@ -218,8 +218,12 @@ class ArduinoCellular {
 
 
         /**
-         * @brief Gets the Network client. (OSI Layer 3)
-         * @return The GSM client.
+         * @brief Gets a new Network client. (OSI Layer 3)
+         * The library automatically manages the sockets, so you can create multiple clients 
+         * without worrying about socket management. You should ensure that you release the client when you are done with it.
+         * It's possible that the client is invalid if no sockets are available.
+         * This is indicated by the isValid() method and the socketId will be -1.
+         * @return A GSM client object that can be used to connect to a server.
          */
         TinyGsmClient getNetworkClient();
 
