@@ -168,20 +168,20 @@ int ArduinoCellular::getSignalQuality(){
 }
 
 TinyGsmClient ArduinoCellular::getNetworkClient(){
-    return TinyGsmClient(modem);
+    return ManagedTinyGsmClient(modem);
 }
 
 HttpClient ArduinoCellular::getHTTPClient(const char * server, const int port){
-    return HttpClient(* new TinyGsmClient(modem), server, port);
+    return HttpClient(* new ManagedTinyGsmClient(modem), server, port);
 }
 
 #if defined(ARDUINO_CELLULAR_BEARSSL)
 HttpClient ArduinoCellular::getHTTPSClient(const char * server, const int port){
-    return HttpClient(* new BearSSLClient(* new TinyGsmClient(modem)), server, port);
+    return HttpClient(* new BearSSLClient(* new ManagedTinyGsmClient(modem)), server, port);
 }
 
 BearSSLClient ArduinoCellular::getSecureNetworkClient(){
-    return BearSSLClient(* new TinyGsmClient(modem));
+    return BearSSLClient(* new ManagedTinyGsmClient(modem));
 }
 #endif
 
