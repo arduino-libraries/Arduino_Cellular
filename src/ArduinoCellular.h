@@ -236,7 +236,8 @@ class ArduinoCellular {
 #endif
 
         /**
-         * @brief Gets the HTTP client for the specified server and port.
+         * @brief Gets a HTTP client for the specified server and port.
+         * The maximum number of HTTP clients is limited by the number of sockets available.
          * @param server The server address.
          * @param port The server port.
          * @return The HTTP client.
@@ -244,7 +245,8 @@ class ArduinoCellular {
         HttpClient getHTTPClient(const char * server, const int port);
 
         /**
-         * @brief Gets the HTTPS client for the specified server and port.
+         * @brief Gets a HTTPS client for the specified server and port.
+         * The maximum number of HTTP clients is limited by the number of sockets available.
          * @param server The server address.
          * @param port The server port.
          * @return The HTTPS client.
