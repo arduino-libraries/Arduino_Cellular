@@ -9,7 +9,7 @@
 unsigned long ArduinoCellular::getTime() {
     int year, month, day, hour, minute, second;
     float tz;
-    modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    Modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
     return Time(year, month, day, hour, minute, second).getUNIXTimestamp();
 }
 
@@ -21,7 +21,7 @@ ArduinoCellular::~ArduinoCellular() {
 }
 
 void ArduinoCellular::begin() {
-    modem.init();
+    Modem.init();
  
     String modemInfo = this ->sendATCommand("I");
     if(modemInfo.indexOf("EC200A") > 0){
@@ -33,15 +33,15 @@ void ArduinoCellular::begin() {
     }
 
     // Set GSM module to text mode
-    modem.sendAT("+CMGF=1");
-    modem.waitResponse();
+    Modem.sendAT("+CMGF=1");
+    Modem.waitResponse();
 
-    modem.sendAT(GF("+CSCS=\"GSM\""));
-    modem.waitResponse();
+    Modem.sendAT(GF("+CSCS=\"GSM\""));
+    Modem.waitResponse();
 
     // Send intrerupt when SMS has been received
-    modem.sendAT("+CNMI=2,1,0,0,0");
-    modem.waitResponse();
+    Modem.sendAT("+CNMI=2,1,0,0,0");
+    Modem.waitResponse();
 
 #if defined(ARDUINO_CELLULAR_BEARSSL)
     ArduinoBearSSL.onGetTime(ArduinoCellular::getTime);
@@ -108,7 +108,7 @@ Geolocation ArduinoCellular::getGPSLocation(unsigned long timeout){
         unsigned long startTime = millis();
 
         while((latitude == 0.00000 || longitude == 0.00000) && (millis() - startTime < timeout)) {
-            modem.getGPS(&latitude, &longitude);
+            Modem.getGPS(&latitude, &longitude);
             delay(1000);
         }
         
@@ -127,7 +127,7 @@ Geolocation ArduinoCellular::getGPSLocation(unsigned long timeout){
 
 Time ArduinoCellular::getGPSTime(){
     int year, month, day, hour, minute, second;
-    modem.getGPSTime(&year, &month, &day, &hour, &minute, &second);
+    Modem.getGPSTime(&year, &month, &day, &hour, &minute, &second);
     return Time(year, month, day, hour, minute, second);
 }
 
@@ -139,22 +139,22 @@ Time ArduinoCellular::getCellularTime(){
     int minute = 0;
     int second = 0;
     float tz;
-    if (modem.NTPServerSync() == 0) {
-      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    if (Modem.NTPServerSync() == 0) {
+      Modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
     }
     return Time(year, month, day, hour, minute, second);
 }
 
 
 void ArduinoCellular::sendSMS(String number, String message){
-    modem.sendAT("+CMGF=1"); 
-    modem.waitResponse(1000);
-    modem.sendAT(GF("+CMGS=\""), number, GF("\""));
-    if (modem.waitResponse(GF(">")) != 1) { }
-    modem.stream->print(message);  // Actually send the message
-    modem.stream->write(static_cast<char>(0x1A));  // Terminate the message
-    modem.stream->flush();
-    auto response = modem.waitResponse(10000L);
+    Modem.sendAT("+CMGF=1"); 
+    Modem.waitResponse(1000);
+    Modem.sendAT(GF("+CMGS=\""), number, GF("\""));
+    if (Modem.waitResponse(GF(">")) != 1) { }
+    Modem.stream->print(message);  // Actually send the message
+    Modem.stream->write(static_cast<char>(0x1A));  // Terminate the message
+    Modem.stream->flush();
+    auto response = Modem.waitResponse(10000L);
     
     if(this->debugStream != nullptr){
         this->debugStream->println("Response: " + String(response));
@@ -163,24 +163,24 @@ void ArduinoCellular::sendSMS(String number, String message){
 
 
 IPAddress ArduinoCellular::getIPAddress(){
-    return modem.localIP();
+    return Modem.localIP();
 }
 
 int ArduinoCellular::getSignalQuality(){
-    return modem.getSignalQuality();
+    return Modem.getSignalQuality();
 }
 
 TinyGsmClient ArduinoCellular::getNetworkClient(){
-    return ManagedTinyGsmClient(modem);
+    return ManagedTinyGsmClient(Modem);
 }
 
 HttpClient ArduinoCellular::getHTTPClient(const char * server, const int port){
-    return HttpClient(* new ManagedTinyGsmClient(modem), server, port);
+    return HttpClient(* new ManagedTinyGsmClient(Modem), server, port);
 }
 
 #if defined(ARDUINO_CELLULAR_BEARSSL)
 HttpClient ArduinoCellular::getHTTPSClient(const char * server, const int port){
-    auto gsmClient = std::make_unique<ManagedTinyGsmClient>(modem);
+    auto gsmClient = std::make_unique<ManagedTinyGsmClient>(Modem);
     auto sslClient = std::make_unique<BearSSLClient>(*gsmClient);
     auto& sslRef = *sslClient;
     
@@ -190,7 +190,7 @@ HttpClient ArduinoCellular::getHTTPSClient(const char * server, const int port){
 }
 
 BearSSLClient ArduinoCellular::getSecureNetworkClient(){
-    return BearSSLClient(* new ManagedTinyGsmClient(modem));
+    return BearSSLClient(* new ManagedTinyGsmClient(Modem));
 }
 #endif
 
@@ -209,14 +209,14 @@ size_t ArduinoCellular::getManagedClientCount() const {
 }
 
 bool ArduinoCellular::isConnectedToOperator(){
-    return modem.isNetworkConnected();
+    return Modem.isNetworkConnected();
 }
 
 bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass){
     if(this->debugStream != nullptr){
         this->debugStream->println("Connecting to 4G network...");
     }
-    while(!modem.gprsConnect(apn, gprsUser, gprsPass)) {
+    while(!Modem.gprsConnect(apn, gprsUser, gprsPass)) {
         if(this->debugStream != nullptr){
             this->debugStream->print(".");
         }
@@ -226,11 +226,11 @@ bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, con
 }
 
 bool ArduinoCellular::isConnectedToInternet(){
-    return modem.isGprsConnected();
+    return Modem.isGprsConnected();
 }
 
 SimStatus ArduinoCellular::getSimStatus(){
-    int simStatus = modem.getSimStatus();
+    int simStatus = Modem.getSimStatus();
     if(this->debugStream != nullptr){
         this->debugStream->println("SIM Status: " + String(simStatus));
     }
@@ -249,12 +249,12 @@ SimStatus ArduinoCellular::getSimStatus(){
 }
 
 bool ArduinoCellular::unlockSIM(String pin){
-    int simStatus = modem.getSimStatus();
+    int simStatus = Modem.getSimStatus();
     if(simStatus == SIM_LOCKED) {
         if(this->debugStream != nullptr){
             this->debugStream->println("Unlocking SIM...");
         }
-        return modem.simUnlock(pin.c_str());
+        return Modem.simUnlock(pin.c_str());
     }
     else if(simStatus == SIM_ERROR || simStatus == SIM_ANTITHEFT_LOCKED) {
         return false;
@@ -267,7 +267,7 @@ bool ArduinoCellular::awaitNetworkRegistration(bool waitForever){
     if(this->debugStream != nullptr){
         this->debugStream->println("Waiting for network registration...");
     }
-    while (!modem.waitForNetwork(waitForNetworkTimeout)) {
+    while (!Modem.waitForNetwork(waitForNetworkTimeout)) {
         
         if(!waitForever) {
             return false;
@@ -308,13 +308,13 @@ bool ArduinoCellular::enableGPS(bool assisted){
         return false;
     }
 
-    return modem.enableGPS();
+    return Modem.enableGPS();
 }
 
 String ArduinoCellular::sendATCommand(const char * command, unsigned long timeout){
     String response;
-    modem.sendAT(command); 
-    modem.waitResponse(timeout, response);
+    Modem.sendAT(command); 
+    Modem.waitResponse(timeout, response);
     return response;
 }
 
@@ -426,7 +426,7 @@ std::vector<SMS> parseSMSData(const String& data) {
 }
 
 String ArduinoCellular::sendUSSDCommand(const char * command){
-    return modem.sendUSSD(command);
+    return Modem.sendUSSD(command);
 }
 
 std::vector<SMS> ArduinoCellular::getReadSMS(){
