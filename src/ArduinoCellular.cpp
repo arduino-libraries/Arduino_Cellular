@@ -1,7 +1,6 @@
 
 
 #include "ArduinoCellular.h"
-#include "ManagedTinyGsmClient.h"
 
 #if defined(ARDUINO_ARCH_MBED)
   #include "Watchdog.h"
@@ -15,6 +14,10 @@ unsigned long ArduinoCellular::getTime() {
 }
 
 ArduinoCellular::ArduinoCellular() {
+}
+
+ArduinoCellular::~ArduinoCellular() {
+    cleanup();
 }
 
 void ArduinoCellular::begin() {
@@ -177,13 +180,33 @@ HttpClient ArduinoCellular::getHTTPClient(const char * server, const int port){
 
 #if defined(ARDUINO_CELLULAR_BEARSSL)
 HttpClient ArduinoCellular::getHTTPSClient(const char * server, const int port){
-    return HttpClient(* new BearSSLClient(* new ManagedTinyGsmClient(modem)), server, port);
+    auto gsmClient = std::make_unique<ManagedTinyGsmClient>(modem);
+    auto sslClient = std::make_unique<BearSSLClient>(*gsmClient);
+    auto& sslRef = *sslClient;
+    
+    managedGsmClients.push_back(std::move(gsmClient));
+    managedSslClients.push_back(std::move(sslClient));
+    return HttpClient(sslRef, server, port);
 }
 
 BearSSLClient ArduinoCellular::getSecureNetworkClient(){
     return BearSSLClient(* new ManagedTinyGsmClient(modem));
 }
 #endif
+
+void ArduinoCellular::cleanup() {
+    /*
+    It's necessary to to manage the lifetime of the clients created by the library
+    because the HttpClient and also BearSSLClient classes expect callers to manage the lifetime of the clients.
+    For convenience, the library provides factory functions that allocate these objects on behalf of the caller.
+     */
+    managedSslClients.clear();  // Destroys BearSSLClient instances
+    managedGsmClients.clear();  // Destroys ManagedTinyGsmClient instances
+}
+
+size_t ArduinoCellular::getManagedClientCount() const {
+    return managedSslClients.size();
+}
 
 bool ArduinoCellular::isConnectedToOperator(){
     return modem.isNetworkConnected();
