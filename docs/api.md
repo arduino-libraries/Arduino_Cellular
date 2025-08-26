@@ -3,6 +3,7 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `class ` [`ArduinoCellular`](#class_arduino_cellular) | This class provides methods to interact with the Arduino Pro Modem, such as connecting to the network, sending [SMS](#class_s_m_s) messages, getting GPS location, and more.
+`class ` [`ManagedTinyGsmClient`](#class_managed_tiny_gsm_client) | A managed client for TinyGSM that automatically handles socket allocation and release. This class allows you to create multiple clients without worrying about socket management. It uses a static bit field to track used sockets and provides methods to lock and unlock the sockets.
 `class ` [`ModemInterface`](#class_modem_interface) | Represents the interface to the 4G modem module which extends the TinyGsmBG96 class.
 `class ` [`SMS`](#class_s_m_s) | Represents an [SMS](#class_s_m_s) message.
 `class ` [`Time`](#class_time) | Represents a point in time with year, month, day, hour, minute, second, and offset.
@@ -17,9 +18,15 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 | [`ArduinoCellular`](#class_arduino_cellular_1a96d1d9f3fbe80adc3d460b4364d47870) | Creates an instance of the [ArduinoCellular](#class_arduino_cellular) class. |
+| [`~ArduinoCellular`](#class_arduino_cellular_1af6b68a2c8c80d8667957b7eee7de1128) | Destructor for the [ArduinoCellular](#class_arduino_cellular) class. Cleans up any resources used by the class. |
+| [`ArduinoCellular`](#class_arduino_cellular_1a7ac09e59bf694dd36c7dc50c748e33a0) | Deleted copy constructor and assignment operator to prevent copying. unique_ptr is used to manage the lifetime of the clients but they cannot be copied. |
+| [`operator=`](#class_arduino_cellular_1ad30357ba5fa2222644995eff91447fe3) | Deleted assignment operator to prevent copying. unique_ptr is used to manage the lifetime of the clients but they cannot be copied. |
+| [`ArduinoCellular`](#class_arduino_cellular_1a897e89d6dfd175fcc1fb41bf92089e08) | Move constructor for the [ArduinoCellular](#class_arduino_cellular) class. Allows moving the instance to another instance. |
+| [`operator=`](#class_arduino_cellular_1aab11902057a738b4a2193fc0caadab0c) | Move assignment operator for the [ArduinoCellular](#class_arduino_cellular) class. Allows moving the instance to another instance. |
 | [`begin`](#class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e) | Initializes the modem. This function must be called before using any other functions in the library. |
 | [`unlockSIM`](#class_arduino_cellular_1aa0be2795ff7b23c39ecef90d9906bbdf) | Unlocks the SIM card using the specified PIN. |
-| [`connect`](#class_arduino_cellular_1a7fb3c3e841b39c4faacef32cec6277b4) | Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided. |
+| [`connect`](#class_arduino_cellular_1ad50b506df65a6ac4c81b9e88095ecd24) | Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided. |
+| [`connect`](#class_arduino_cellular_1a247ff63f5852b42f32103d4cef84b2a3) | Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided. |
 | [`isConnectedToOperator`](#class_arduino_cellular_1af7453ef90702e9042e2b4b18fa89db03) | Checks if the modem is registered on the network. |
 | [`isConnectedToInternet`](#class_arduino_cellular_1a6f8251e06de1810897b8bd8f8fb1b1a2) | Checks if the GPRS network is connected. |
 | [`enableGPS`](#class_arduino_cellular_1abe77a53e0eba6e8d62ba5db3bb6f5e92) | Enables or disables the GPS functionality. |
@@ -27,18 +34,21 @@ This class provides methods to interact with the Arduino Pro Modem, such as conn
 | [`getCellularTime`](#class_arduino_cellular_1a6b3ce5485badff582584d539e790aff4) | Gets the current time from the network. |
 | [`getGPSTime`](#class_arduino_cellular_1a4aeb898c958e6eb001d606f0c7da8799) | Gets the current time from the GPS module. |
 | [`sendSMS`](#class_arduino_cellular_1a371aef1318857f0863f443eaeabf4ac2) | Sends an [SMS](#class_s_m_s) message to the specified number. |
-| [`getReadSMS`](#class_arduino_cellular_1ae032c4e4cade6579a2c1edfe53d2ff2b) | Gets the list of read [SMS](#class_s_m_s) messages. |
-| [`getUnreadSMS`](#class_arduino_cellular_1a212513654884058947a2a4d332f6ccfc) | Gets the list of unread [SMS](#class_s_m_s) messages. |
+| [`getReadSMS`](#class_arduino_cellular_1a5da65683df86af75590c7a68766236ee) | Gets the list of read [SMS](#class_s_m_s) messages. |
+| [`getUnreadSMS`](#class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5) | Gets the list of unread [SMS](#class_s_m_s) messages. |
 | [`deleteSMS`](#class_arduino_cellular_1abe4337f0bc8c486a076011309120ace1) | Deletes an [SMS](#class_s_m_s) message at the specified index. |
 | [`sendATCommand`](#class_arduino_cellular_1a58a3e3713af0c01ad1075a2509c6874d) | Sends an AT command to the modem and waits for a response, then returns the response. |
 | [`sendUSSDCommand`](#class_arduino_cellular_1a6886aec5850836ea8e8f135d4e5632ab) | Sends a USSD command to the network operator and waits for a response. |
-| [`getNetworkClient`](#class_arduino_cellular_1acff92474af3bd819b62f132cf12f45ba) | Gets the Network client. (OSI Layer 3) |
+| [`getNetworkClient`](#class_arduino_cellular_1acff92474af3bd819b62f132cf12f45ba) | Gets a new Network client. (OSI Layer 3) The library automatically manages the sockets, so you can create multiple clients without worrying about socket management. You should ensure that you release the client when you are done with it. It's possible that the client is invalid if no sockets are available. This is indicated by the isValid() method and the socketId will be -1. |
 | [`getSecureNetworkClient`](#class_arduino_cellular_1a8b7486d1a682787588c015af8d65a38e) | Gets the Transport Layer Security (TLS) client. (OSI Layer 4) |
-| [`getHTTPClient`](#class_arduino_cellular_1aa1b4c3bbd14984d2a7ed1db7fa1ac930) | Gets the HTTP client for the specified server and port. |
-| [`getHTTPSClient`](#class_arduino_cellular_1aeb2d1bff0405e92197c0de750cef87e0) | Gets the HTTPS client for the specified server and port. |
+| [`getHTTPClient`](#class_arduino_cellular_1aa1b4c3bbd14984d2a7ed1db7fa1ac930) | Gets a HTTP client for the specified server and port. The maximum number of HTTP clients is limited by the number of sockets available. Call `[cleanup()](#class_arduino_cellular_1a13c1f1eecc24756cef564a2555cb829e)` to release the resources used by the clients once you are done with them. |
+| [`getHTTPSClient`](#class_arduino_cellular_1aeb2d1bff0405e92197c0de750cef87e0) | Gets a HTTPS client for the specified server and port. The maximum number of HTTP clients is limited by the number of sockets available. Call `[cleanup()](#class_arduino_cellular_1a13c1f1eecc24756cef564a2555cb829e)` to release the resources used by the clients once you are done with them. |
+| [`cleanup`](#class_arduino_cellular_1a13c1f1eecc24756cef564a2555cb829e) | Cleans up the clients and releases the resources used by them. It's necessary to call this function to free up the memory used by the client objects that are created by the library internally. |
+| [`getManagedClientCount`](#class_arduino_cellular_1a4a845d55293e310f5f19bcc14ec135f3) | Gets the number of managed clients. The clients are managed in the sense of memory management. |
 | [`getIPAddress`](#class_arduino_cellular_1aabf2ad2144827d34c3ba298b5f423344) | Gets the local IP address. |
 | [`getSignalQuality`](#class_arduino_cellular_1aefdae9cb2b8c9f05130b09c18c3f245e) | Gets the signal quality. |
 | [`setDebugStream`](#class_arduino_cellular_1aae2cacf5a5778293f0bd3312d2289327) | Sets the debug stream for [ArduinoCellular](#class_arduino_cellular). |
+| [`getSimStatus`](#class_arduino_cellular_1a25aae9d375b5a0e1c4271f06815adc49) | Gets the SIM card status. |
 
 ## Members
 
@@ -50,6 +60,58 @@ ArduinoCellular()
 
 Creates an instance of the [ArduinoCellular](#class_arduino_cellular) class.
 
+<hr />
+
+### `~ArduinoCellular` <a id="class_arduino_cellular_1af6b68a2c8c80d8667957b7eee7de1128" class="anchor"></a>
+
+```cpp
+~ArduinoCellular()
+```
+
+Destructor for the [ArduinoCellular](#class_arduino_cellular) class. Cleans up any resources used by the class.
+
+<hr />
+
+### `ArduinoCellular` <a id="class_arduino_cellular_1a7ac09e59bf694dd36c7dc50c748e33a0" class="anchor"></a>
+
+```cpp
+ArduinoCellular(const ArduinoCellular &) = delete
+```
+
+Deleted copy constructor and assignment operator to prevent copying. unique_ptr is used to manage the lifetime of the clients but they cannot be copied.
+
+<hr />
+
+### `operator=` <a id="class_arduino_cellular_1ad30357ba5fa2222644995eff91447fe3" class="anchor"></a>
+
+```cpp
+ArduinoCellular & operator=(const ArduinoCellular &) = delete
+```
+
+Deleted assignment operator to prevent copying. unique_ptr is used to manage the lifetime of the clients but they cannot be copied.
+
+<hr />
+
+### `ArduinoCellular` <a id="class_arduino_cellular_1a897e89d6dfd175fcc1fb41bf92089e08" class="anchor"></a>
+
+```cpp
+ArduinoCellular( ArduinoCellular &&) = default
+```
+
+Move constructor for the [ArduinoCellular](#class_arduino_cellular) class. Allows moving the instance to another instance.
+
+<hr />
+
+### `operator=` <a id="class_arduino_cellular_1aab11902057a738b4a2193fc0caadab0c" class="anchor"></a>
+
+```cpp
+ArduinoCellular & operator=( ArduinoCellular &&) = default
+```
+
+Move assignment operator for the [ArduinoCellular](#class_arduino_cellular) class. Allows moving the instance to another instance.
+
+#### Returns
+A reference to the moved instance.
 <hr />
 
 ### `begin` <a id="class_arduino_cellular_1ad5ca7cf61f48c40569f41f3029d6516e" class="anchor"></a>
@@ -77,10 +139,10 @@ Unlocks the SIM card using the specified PIN.
 True if the SIM card is unlocked, false otherwise.
 <hr />
 
-### `connect` <a id="class_arduino_cellular_1a7fb3c3e841b39c4faacef32cec6277b4" class="anchor"></a>
+### `connect` <a id="class_arduino_cellular_1ad50b506df65a6ac4c81b9e88095ecd24" class="anchor"></a>
 
 ```cpp
-bool connect(String apn, String username, String password)
+bool connect(String apn, String username, String password, bool waitForever)
 ```
 
 Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided.
@@ -91,6 +153,25 @@ Registers with the cellular network and connects to the Internet if the APN, GPR
 * `username` The APN username. 
 
 * `password` The APN password. 
+
+* `waitForever` The function does not return unless a connection has been established 
+
+#### Returns
+True if the connection is successful, false otherwise.
+<hr />
+
+### `connect` <a id="class_arduino_cellular_1a247ff63f5852b42f32103d4cef84b2a3" class="anchor"></a>
+
+```cpp
+bool connect(String apn, bool waitForever)
+```
+
+Registers with the cellular network and connects to the Internet if the APN, GPRS username, and GPRS password are provided.
+
+#### Parameters
+* `apn` The Access Point Name. 
+
+* `waitForever` The function does not return unless a connection has been established 
 
 #### Returns
 True if the connection is successful, false otherwise.
@@ -188,7 +269,7 @@ Sends an [SMS](#class_s_m_s) message to the specified number.
 * `message` The message to send.
 <hr />
 
-### `getReadSMS` <a id="class_arduino_cellular_1ae032c4e4cade6579a2c1edfe53d2ff2b" class="anchor"></a>
+### `getReadSMS` <a id="class_arduino_cellular_1a5da65683df86af75590c7a68766236ee" class="anchor"></a>
 
 ```cpp
 std::vector< SMS > getReadSMS()
@@ -200,7 +281,7 @@ Gets the list of read [SMS](#class_s_m_s) messages.
 A vector of [SMS](#class_s_m_s) messages.
 <hr />
 
-### `getUnreadSMS` <a id="class_arduino_cellular_1a212513654884058947a2a4d332f6ccfc" class="anchor"></a>
+### `getUnreadSMS` <a id="class_arduino_cellular_1af1e3b2fad0a64f3b7675c88100ddbca5" class="anchor"></a>
 
 ```cpp
 std::vector< SMS > getUnreadSMS()
@@ -265,10 +346,10 @@ The response from the network operator. (Note: The response may be an [SMS](#cla
 TinyGsmClient getNetworkClient()
 ```
 
-Gets the Network client. (OSI Layer 3)
+Gets a new Network client. (OSI Layer 3) The library automatically manages the sockets, so you can create multiple clients without worrying about socket management. You should ensure that you release the client when you are done with it. It's possible that the client is invalid if no sockets are available. This is indicated by the isValid() method and the socketId will be -1.
 
 #### Returns
-The GSM client.
+A GSM client object that can be used to connect to a server.
 <hr />
 
 ### `getSecureNetworkClient` <a id="class_arduino_cellular_1a8b7486d1a682787588c015af8d65a38e" class="anchor"></a>
@@ -289,7 +370,7 @@ The GSM client.
 HttpClient getHTTPClient(const char * server, const int port)
 ```
 
-Gets the HTTP client for the specified server and port.
+Gets a HTTP client for the specified server and port. The maximum number of HTTP clients is limited by the number of sockets available. Call `[cleanup()](#class_arduino_cellular_1a13c1f1eecc24756cef564a2555cb829e)` to release the resources used by the clients once you are done with them.
 
 #### Parameters
 * `server` The server address. 
@@ -306,7 +387,7 @@ The HTTP client.
 HttpClient getHTTPSClient(const char * server, const int port)
 ```
 
-Gets the HTTPS client for the specified server and port.
+Gets a HTTPS client for the specified server and port. The maximum number of HTTP clients is limited by the number of sockets available. Call `[cleanup()](#class_arduino_cellular_1a13c1f1eecc24756cef564a2555cb829e)` to release the resources used by the clients once you are done with them.
 
 #### Parameters
 * `server` The server address. 
@@ -315,6 +396,28 @@ Gets the HTTPS client for the specified server and port.
 
 #### Returns
 The HTTPS client.
+<hr />
+
+### `cleanup` <a id="class_arduino_cellular_1a13c1f1eecc24756cef564a2555cb829e" class="anchor"></a>
+
+```cpp
+void cleanup()
+```
+
+Cleans up the clients and releases the resources used by them. It's necessary to call this function to free up the memory used by the client objects that are created by the library internally.
+
+<hr />
+
+### `getManagedClientCount` <a id="class_arduino_cellular_1a4a845d55293e310f5f19bcc14ec135f3" class="anchor"></a>
+
+```cpp
+size_t getManagedClientCount() const
+```
+
+Gets the number of managed clients. The clients are managed in the sense of memory management.
+
+#### Returns
+The number of managed clients.
 <hr />
 
 ### `getIPAddress` <a id="class_arduino_cellular_1aabf2ad2144827d34c3ba298b5f423344" class="anchor"></a>
@@ -353,6 +456,135 @@ This function allows you to set the debug stream for [ArduinoCellular](#class_ar
 
 #### Parameters
 * `stream` A pointer to the Stream object that will be used as the debug stream.
+<hr />
+
+### `getSimStatus` <a id="class_arduino_cellular_1a25aae9d375b5a0e1c4271f06815adc49" class="anchor"></a>
+
+```cpp
+SimStatus getSimStatus()
+```
+
+Gets the SIM card status.
+
+#### Returns
+The SIM card status.
+<hr />
+
+# class `ManagedTinyGsmClient` <a id="class_managed_tiny_gsm_client" class="anchor"></a>
+
+```cpp
+class ManagedTinyGsmClient
+  : public TinyGsmClient
+```
+
+A managed client for TinyGSM that automatically handles socket allocation and release. This class allows you to create multiple clients without worrying about socket management. It uses a static bit field to track used sockets and provides methods to lock and unlock the sockets.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+| [`ManagedTinyGsmClient`](#class_managed_tiny_gsm_client_1ae8426b2b9cbc4fd5cc42fc63b29c4765) | Constructs a [ManagedTinyGsmClient](#class_managed_tiny_gsm_client) with the specified modem. |
+| [`ManagedTinyGsmClient`](#class_managed_tiny_gsm_client_1afaea0452624a337c1b9833be6ccb5432) | Copy constructor for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). This constructor allocates a new socket for the copied client.  |
+| [`operator=`](#class_managed_tiny_gsm_client_1af87b0fec92e954c59b7a660f2fb4e8f4) | Assignment operator for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client).  |
+| [`ManagedTinyGsmClient`](#class_managed_tiny_gsm_client_1a50389bc67386357c251be242f8a5edb1) | Move constructor for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client).  |
+| [`operator=`](#class_managed_tiny_gsm_client_1aadcf674f40d9af11dae82fb85dde41d4) | Move assignment operator for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). This operator transfers ownership of the socket from the other client to this one.  |
+| [`~ManagedTinyGsmClient`](#class_managed_tiny_gsm_client_1af227af40b0e787ef8323c5346b69679a) | Destructor for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). Releases the socket if it is valid. |
+| [`getSocketId`](#class_managed_tiny_gsm_client_1a8c1bd76a1728ddefacfdd30c81ac70d7) | Get the socket ID for this client. The maximum number of sockets is defined by TINY_GSM_MUX_COUNT. If the client is invalid, the socketId will be -1.  |
+| [`isValid`](#class_managed_tiny_gsm_client_1a62617c1a63c68e4cd31a4fcca52fe229) | Check if the client is valid. A client is valid if it has a socket ID >= 0. This is useful to check if the client can be used for network operations.  |
+
+## Members
+
+### `ManagedTinyGsmClient` <a id="class_managed_tiny_gsm_client_1ae8426b2b9cbc4fd5cc42fc63b29c4765" class="anchor"></a>
+
+```cpp
+ManagedTinyGsmClient(TinyGsm & modem)
+```
+
+Constructs a [ManagedTinyGsmClient](#class_managed_tiny_gsm_client) with the specified modem.
+
+#### Parameters
+* `modem` The TinyGsm modem to use.
+<hr />
+
+### `ManagedTinyGsmClient` <a id="class_managed_tiny_gsm_client_1afaea0452624a337c1b9833be6ccb5432" class="anchor"></a>
+
+```cpp
+ManagedTinyGsmClient(const ManagedTinyGsmClient & other)
+```
+
+Copy constructor for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). This constructor allocates a new socket for the copied client. 
+#### Parameters
+* `other` The other [ManagedTinyGsmClient](#class_managed_tiny_gsm_client) to copy from. Note: If the other client is invalid, this will also create an invalid client. The socketId will be -1.
+<hr />
+
+### `operator=` <a id="class_managed_tiny_gsm_client_1af87b0fec92e954c59b7a660f2fb4e8f4" class="anchor"></a>
+
+```cpp
+ManagedTinyGsmClient & operator=(const ManagedTinyGsmClient & other)
+```
+
+Assignment operator for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). 
+#### Parameters
+* `other` The other [ManagedTinyGsmClient](#class_managed_tiny_gsm_client) to copy from. 
+
+#### Returns
+A reference to this [ManagedTinyGsmClient](#class_managed_tiny_gsm_client).
+<hr />
+
+### `ManagedTinyGsmClient` <a id="class_managed_tiny_gsm_client_1a50389bc67386357c251be242f8a5edb1" class="anchor"></a>
+
+```cpp
+ManagedTinyGsmClient( ManagedTinyGsmClient && other)
+```
+
+Move constructor for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). 
+#### Parameters
+* `other` The other [ManagedTinyGsmClient](#class_managed_tiny_gsm_client) to move from.
+<hr />
+
+### `operator=` <a id="class_managed_tiny_gsm_client_1aadcf674f40d9af11dae82fb85dde41d4" class="anchor"></a>
+
+```cpp
+ManagedTinyGsmClient & operator=( ManagedTinyGsmClient && other)
+```
+
+Move assignment operator for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). This operator transfers ownership of the socket from the other client to this one. 
+#### Parameters
+* `other` The other [ManagedTinyGsmClient](#class_managed_tiny_gsm_client) to move from. 
+
+#### Returns
+A reference to this [ManagedTinyGsmClient](#class_managed_tiny_gsm_client).
+<hr />
+
+### `~ManagedTinyGsmClient` <a id="class_managed_tiny_gsm_client_1af227af40b0e787ef8323c5346b69679a" class="anchor"></a>
+
+```cpp
+~ManagedTinyGsmClient()
+```
+
+Destructor for [ManagedTinyGsmClient](#class_managed_tiny_gsm_client). Releases the socket if it is valid.
+<hr />
+
+### `getSocketId` <a id="class_managed_tiny_gsm_client_1a8c1bd76a1728ddefacfdd30c81ac70d7" class="anchor"></a>
+
+```cpp
+inline int getSocketId() const
+```
+
+Get the socket ID for this client. The maximum number of sockets is defined by TINY_GSM_MUX_COUNT. If the client is invalid, the socketId will be -1. 
+#### Returns
+The socket ID (0 - (TINY_GSM_MUX_COUNT - 1) or -1 if invalid).
+<hr />
+
+### `isValid` <a id="class_managed_tiny_gsm_client_1a62617c1a63c68e4cd31a4fcca52fe229" class="anchor"></a>
+
+```cpp
+inline bool isValid() const
+```
+
+Check if the client is valid. A client is valid if it has a socket ID >= 0. This is useful to check if the client can be used for network operations. 
+#### Returns
+True if the client is valid, false otherwise.
 <hr />
 
 # class `ModemInterface` <a id="class_modem_interface" class="anchor"></a>
