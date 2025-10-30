@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <time.h>
 
 /**
  * @class Time
@@ -91,9 +92,7 @@ class Time {
          * @return The time in UNIX timestamp format.
          */
         String getUNIXTimestampString() {
-            // Simple conversion to UNIX timestamp, not accounting for leap years or time zones
-            long timestamp = second + minute*60 + hour*3600 + day*86400 + (month-1)*2629743 + (year-1970)*31556926;
-            return String(timestamp);
+            return String(getUNIXTimestamp());
         }
 
         /**
@@ -101,9 +100,27 @@ class Time {
          * @return The time in UNIX timestamp format.
          */
         unsigned long getUNIXTimestamp() {
-            // Simple conversion to UNIX timestamp, not accounting for leap years or time zones
-            unsigned long timestamp = second + minute*60 + hour*3600 + day*86400 + (month-1)*2629743 + (year-1970)*31556926;
-            return timestamp;
+            struct tm t =
+            {
+              0 /* tm_sec   */,
+              0 /* tm_min   */,
+              0 /* tm_hour  */,
+              0 /* tm_mday  */,
+              0 /* tm_mon   */,
+              0 /* tm_year  */,
+              0 /* tm_wday  */,
+              0 /* tm_yday  */,
+              0 /* tm_isdst */
+            };
+            t.tm_mon = month - 1;
+            t.tm_mday = day;
+            t.tm_year = year - 1900;
+            t.tm_hour = hour;
+            t.tm_min = minute;
+            t.tm_sec = second;
+            t.tm_isdst = -1;
+
+            return mktime(&t);
         }
 
         /**
