@@ -5,11 +5,38 @@
   #include "Watchdog.h"
 #endif
 
-unsigned long ArduinoCellular::getTime() {
-    int year, month, day, hour, minute, second;
+Time ArduinoCellular::getTimeStruct(bool localTime) {
+    int year = 1970;
+    int month = 1;
+    int day = 1;
+    int hour = 0;
+    int minute = 0;
+    int second = 0;
     float tz;
-    modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
-    return Time(year, month, day, hour, minute, second).getUNIXTimestamp();
+    if (syncNTPServer() == 0) {
+        if (localTime) {
+            modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+        } else {
+            modem.getNetworkUTCTime(&year, &month, &day, &hour, &minute, &second, &tz);
+        }
+    }
+    return Time(year, month, day, hour, minute, second);
+}
+
+unsigned long ArduinoCellular::getTime() {
+    return getTimeStruct().getUNIXTimestamp();
+}
+
+int ArduinoCellular::syncNTPServer(bool forceNTPSync) {
+    static bool needNTPSync = true;
+    if(!needNTPSync && !forceNTPSync) {
+        return 0;
+    }
+    if(modem.NTPServerSync() == 0) {
+        needNTPSync = false;
+        return 0;
+    }
+    return -1;
 }
 
 ArduinoCellular::ArduinoCellular() {
@@ -126,20 +153,15 @@ Time ArduinoCellular::getGPSTime(){
     return Time(year, month, day, hour, minute, second);
 }
 
-Time ArduinoCellular::getCellularTime(){
-    int year = 1970;
-    int month = 1;
-    int day = 1;
-    int hour = 0;
-    int minute = 0;
-    int second = 0;
-    float tz;
-    if (modem.NTPServerSync() == 0) {
-      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
-    }
-    return Time(year, month, day, hour, minute, second);
+Time ArduinoCellular::getCellularTime(bool localTime){
+    // Get the current time from the network as localtime
+    return getTimeStruct(localTime);
 }
 
+bool ArduinoCellular::syncCellularTime(){
+    // Sync the time with the network NTP service
+    return syncNTPServer(true) == 0 ? true : false;
+}
 
 void ArduinoCellular::sendSMS(String number, String message){
     modem.sendAT("+CMGF=1"); 
