@@ -78,7 +78,7 @@ bool ArduinoCellular::connect(String apn, String username, String password, bool
         return true;       
     }
 
-    if(connectToGPRS(apn.c_str(), username.c_str(), password.c_str())){
+    if(connectToGPRS(apn.c_str(), username.c_str(), password.c_str(), waitForever)){
         auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
         
         if(response.indexOf("OK") != -1){
@@ -126,7 +126,7 @@ Time ArduinoCellular::getGPSTime(){
     return Time(year, month, day, hour, minute, second);
 }
 
-Time ArduinoCellular::getCellularTime(){
+Time ArduinoCellular::getCellularTime(bool localTime, bool forceNTPSync) {
     int year = 1970;
     int month = 1;
     int day = 1;
@@ -134,9 +134,18 @@ Time ArduinoCellular::getCellularTime(){
     int minute = 0;
     int second = 0;
     float tz;
-    if (modem.NTPServerSync() == 0) {
-      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+
+    if ((needNTPSync || forceNTPSync) && (modem.NTPServerSync() != 0)) {
+        return Time(year, month, day, hour, minute, second);
     }
+    needNTPSync = false;
+
+    if (localTime) {
+      modem.getNetworkTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    } else {
+      modem.getNetworkUTCTime(&year, &month, &day, &hour, &minute, &second, &tz);
+    }
+
     return Time(year, month, day, hour, minute, second);
 }
 
@@ -187,11 +196,16 @@ bool ArduinoCellular::isConnectedToOperator(){
     return modem.isNetworkConnected();
 }
 
-bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass){
+bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass, bool waitForever){
     if(this->debugStream != nullptr){
         this->debugStream->println("Connecting to 4G network...");
     }
     while(!modem.gprsConnect(apn, gprsUser, gprsPass)) {
+
+        if(!waitForever) {
+            return false;
+        }
+
         if(this->debugStream != nullptr){
             this->debugStream->print(".");
         }
@@ -243,7 +257,7 @@ bool ArduinoCellular::awaitNetworkRegistration(bool waitForever){
         this->debugStream->println("Waiting for network registration...");
     }
     while (!modem.waitForNetwork(waitForNetworkTimeout)) {
-        
+
         if(!waitForever) {
             return false;
         }
