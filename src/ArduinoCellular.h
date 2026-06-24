@@ -158,12 +158,19 @@ class ArduinoCellular {
          * @return The GPS location. If the location is not retrieved, the latitude and longitude will be 0.0.
          */
         Geolocation getGPSLocation(unsigned long timeout = 60000);
-        
+
         /**
          * @brief Gets the current time from the network.
+         * @param localTime If true, the time will be converted to local time. Default is true.
          * @return The current time.
          */
-        Time getCellularTime();
+        Time getCellularTime(bool localTime = true);
+
+        /**
+         * @brief Sync the modem time using NTP service.
+         * @return True  on success false otherwise.
+         */
+        bool syncCellularTime();
 
         /**
          * @brief Gets the current time from the GPS module.
@@ -303,7 +310,11 @@ class ArduinoCellular {
 
         static unsigned long getTime(); /** Callback for getting the current time as an unix timestamp. */
 
+        static Time getTimeStruct(bool localTime = false); /** Function for getting the current time as a Time object. */
+
         static constexpr unsigned long waitForNetworkTimeout = 20000L; /**< Maximum wait time for network registration (In milliseconds). */
+
+        static int syncNTPServer(bool forceNTPSync = false); /** Function for synchronizing the NTP server. */
 };
 
 
