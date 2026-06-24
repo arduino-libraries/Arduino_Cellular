@@ -78,7 +78,7 @@ bool ArduinoCellular::connect(String apn, String username, String password, bool
         return true;       
     }
 
-    if(connectToGPRS(apn.c_str(), username.c_str(), password.c_str())){
+    if(connectToGPRS(apn.c_str(), username.c_str(), password.c_str(), waitForever)){
         auto response = this->sendATCommand("+QIDNSCFG=1,\"8.8.8.8\",\"8.8.4.4\"");
         
         if(response.indexOf("OK") != -1){
@@ -187,11 +187,16 @@ bool ArduinoCellular::isConnectedToOperator(){
     return modem.isNetworkConnected();
 }
 
-bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass){
+bool ArduinoCellular::connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass, bool waitForever){
     if(this->debugStream != nullptr){
         this->debugStream->println("Connecting to 4G network...");
     }
     while(!modem.gprsConnect(apn, gprsUser, gprsPass)) {
+
+        if(!waitForever) {
+            return false;
+        }
+
         if(this->debugStream != nullptr){
             this->debugStream->print(".");
         }
@@ -243,7 +248,7 @@ bool ArduinoCellular::awaitNetworkRegistration(bool waitForever){
         this->debugStream->println("Waiting for network registration...");
     }
     while (!modem.waitForNetwork(waitForNetworkTimeout)) {
-        
+
         if(!waitForever) {
             return false;
         }
