@@ -16,6 +16,7 @@
 
 #include <Arduino.h>
 #include <vector>
+#include <memory>
 
 #if defined __has_include
   #if !__has_include (<ArduinoIoTCloud.h>)
@@ -30,6 +31,7 @@
 
 #include <ModemInterface.h>
 #include <TimeUtils.h>
+#include "ManagedTinyGsmClient.h"
 
 /**
  * @enum ModemModel
@@ -99,6 +101,37 @@ class ArduinoCellular {
          * @brief Creates an instance of the ArduinoCellular class.
          */
         ArduinoCellular();
+
+        /**
+         * @brief Destructor for the ArduinoCellular class.
+         * Cleans up any resources used by the class.
+         */
+        ~ArduinoCellular();
+
+        /**
+         * @brief Deleted copy constructor and assignment operator to prevent copying.
+         * unique_ptr is used to manage the lifetime of the clients but they cannot be copied.
+         */
+        ArduinoCellular(const ArduinoCellular&) = delete;
+
+        /**
+         * @brief Deleted assignment operator to prevent copying.
+         * unique_ptr is used to manage the lifetime of the clients but they cannot be copied.
+         */
+        ArduinoCellular& operator=(const ArduinoCellular&) = delete;
+
+        /**
+         * @brief Move constructor for the ArduinoCellular class.
+         * Allows moving the instance to another instance.
+         */
+        ArduinoCellular(ArduinoCellular&&) = default;
+
+        /**
+         * @brief Move assignment operator for the ArduinoCellular class.
+         * Allows moving the instance to another instance.
+         * @return A reference to the moved instance.
+         */
+        ArduinoCellular& operator=(ArduinoCellular&&) = default;
 
         /**
          * @brief Initializes the modem.
@@ -218,8 +251,12 @@ class ArduinoCellular {
 
 
         /**
-         * @brief Gets the Network client. (OSI Layer 3)
-         * @return The GSM client.
+         * @brief Gets a new Network client. (OSI Layer 3)
+         * The library automatically manages the sockets, so you can create multiple clients 
+         * without worrying about socket management. You should ensure that you release the client when you are done with it.
+         * It's possible that the client is invalid if no sockets are available.
+         * This is indicated by the isValid() method and the socketId will be -1.
+         * @return A GSM client object that can be used to connect to a server.
          */
         TinyGsmClient getNetworkClient();
 
@@ -232,7 +269,9 @@ class ArduinoCellular {
 #endif
 
         /**
-         * @brief Gets the HTTP client for the specified server and port.
+         * @brief Gets a HTTP client for the specified server and port.
+         * The maximum number of HTTP clients is limited by the number of sockets available.
+         * Call `cleanup()` to release the resources used by the clients once you are done with them.
          * @param server The server address.
          * @param port The server port.
          * @return The HTTP client.
@@ -240,13 +279,29 @@ class ArduinoCellular {
         HttpClient getHTTPClient(const char * server, const int port);
 
         /**
-         * @brief Gets the HTTPS client for the specified server and port.
+         * @brief Gets a HTTPS client for the specified server and port.
+         * The maximum number of HTTP clients is limited by the number of sockets available.
+         * Call `cleanup()` to release the resources used by the clients once you are done with them.
          * @param server The server address.
          * @param port The server port.
          * @return The HTTPS client.
          */
         HttpClient getHTTPSClient(const char * server, const int port);
         
+        /**
+         * @brief Cleans up the clients and releases the resources used by them.
+         * It's necessary to call this function to free up the memory used by the client
+         * objects that are created by the library internally.
+         */
+        void cleanup();
+
+        /**
+         * @brief Gets the number of managed clients.
+         * The clients are managed in the sense of memory management.
+         * @return The number of managed clients.
+         */
+        size_t getManagedClientCount() const;
+
         /**
          * @brief Gets the local IP address.
          * @return The local IP address.
@@ -276,6 +331,10 @@ class ArduinoCellular {
         SimStatus getSimStatus();
 
     private:
+        // Each instance manages its own connections
+        std::vector<std::unique_ptr<ManagedTinyGsmClient>> managedGsmClients;
+        std::vector<std::unique_ptr<BearSSLClient>> managedSslClients;
+
         bool connectToGPRS(const char * apn, const char * gprsUser, const char * gprsPass);
         
 

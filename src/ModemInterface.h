@@ -72,6 +72,6 @@ public:
 /**
  * @brief The global modem object.
  */
-extern ModemInterface modem; 
+extern ModemInterface Modem;
 
 #endif
